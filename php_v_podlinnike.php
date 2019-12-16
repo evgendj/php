@@ -2,7 +2,7 @@
 
 
 
-
+print_r($GLOBALS);
 
 
 
