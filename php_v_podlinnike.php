@@ -1,6 +1,30 @@
 <?php
 
 
+
+class MathComplex {
+	public $re, $im;
+	function add($re, $im){
+		$this->re += $re;
+		$this->im += $im;
+	}
+}
+
+$obj = new MathComplex;
+$obj->re = 6;
+$obj->im = 101;
+
+echo $obj->re;
+
+
+
+
+
+
+
+/*
+
+
 // Даем массив и дробим на массивы, кол-во элементов кратно 3
 
 $mass = [9,2,3,6,15,2,17,9,12];
@@ -45,7 +69,7 @@ foreach (getSizeForLimit($mas_for_limit, 17) as $key => $value) {
   echo "$value<br>";
 }
 
-
+*/
 
 
 
