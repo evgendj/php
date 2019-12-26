@@ -1,7 +1,5 @@
 <?php
 
-// Видео 6 просмотрел
-
 require_once 'classes/Car.php';
 
 function debug($data) {
