@@ -8,6 +8,4 @@ $file = new File(__DIR__ . '/file.txt'); // дир говорит текущая
 $file->write('Строка 1');
 $file->write('Строка 2');
 
-
-
  ?>
