@@ -1,6 +1,6 @@
 <?php
 
-// Видео 9 смотрю 18 минут - Про то чтобы прописать скидку в сеттере, напиши про геттеры и сеттеры. И закрой скидку
+// Видео 10 смотрю
 
 error_reporting(-1);
 
@@ -18,7 +18,6 @@ $notebook = new NotebookProduct('Dell', 1000, 'Intel');
 debug($book);
 debug($notebook);
 
-$book->discount = 50;
 
 echo $book->getProduct();
 echo $notebook->getProduct();
