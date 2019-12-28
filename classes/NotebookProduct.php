@@ -16,4 +16,7 @@ class NotebookProduct extends Product
     return $out;
   }
 
+  function addProduct($name, $price) {
+
+  }
 }

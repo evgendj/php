@@ -1,6 +1,14 @@
 <?php
-
 /* Результат выполнения тестового задания №1 от Гузун ЕА */
+
+require_once 'classes/BaseMath.php';
+require_once 'classes/F1.php';
+
+function debug($data)() {
+	echo "<pre> . print_r($data, 1) . </pre>";
+}
+
+/*
 
 //------ Функции и классы
 // 1.2.2 - массив простых чисел findSimple()
@@ -33,7 +41,7 @@ function squareTrapeze($a) {
 	for($i = 0; $i < count($a); $i++) {
 		$a[$i]['s'] = 0.5 * $a[$i]['c']*($a[$i]['a'] + $a[$i]['b']);
 	}
-	return $a;	
+	return $a;
 }
 // 1.2.5 - максимальная площадь getSizeForLimit()
 function getSizeForLimit($a, $b) {
@@ -120,6 +128,4 @@ class F1 extends BaseMath {
 // 1.2.7
 printTrapeze(squareTrapeze(createTrapeze($mass)));
 
-
-
-?>
+*/

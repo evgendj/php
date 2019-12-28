@@ -1,15 +1,13 @@
 <?php
 
-class Product
+abstract class Product
 {
   public $name;
   protected $price;
 
-  private $discount = 10;
+  const TEST = 10;
 
-  //public $public = 'PUBLIC';
-  //protected $protected = 'PROTECTED';
-  //private $private = 'PRIVATE';
+  private $discount = 0;
 
   function __construct($name, $price)
   {
@@ -34,11 +32,16 @@ class Product
     Цена со скидкой: {$this->getPrice()}<br>";
   }
 
+  function getDiscount() {
+    return $this->discount;
+  }
+
   function setDiscount($discount)
   {
     $this->discount = $discount;
   }
 
+  abstract public function addProduct($name, $price);
 
 
 }
