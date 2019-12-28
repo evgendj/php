@@ -4,9 +4,21 @@
 require_once 'classes/BaseMath.php';
 require_once 'classes/F1.php';
 
-function debug($data)() {
-	echo "<pre> . print_r($data, 1) . </pre>";
+function debug($data) {
+	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
+
+
+$abc = new F1 (2, 3, 4);
+$abc2 = new F1 (20, 30, 40);
+
+debug($abc);
+debug($abc2);
+// echo $abc->exp1() . "<br>";
+echo $abc->getValue() . "<br>";
+echo $abc2->getValue();
+
+
 
 /*
 
