@@ -8,22 +8,7 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-
-$abc = new F1 (2, 3, 4);
-$abc2 = new F1 (20, 30, 40);
-
-debug($abc);
-debug($abc2);
-// echo $abc->exp1() . "<br>";
-echo $abc->getValue() . "<br>";
-echo $abc2->getValue();
-
-
-
-/*
-
-//------ Функции и классы
-// 1.2.2 - массив простых чисел findSimple()
+// Массив простых чисел findSimple()
 function findSimple($a, $b) {
 	for ($i = 0, $array = []; $a <= $b; $i++, $a++) {
 		for ($j = 2, $s = 0; $j < $a; $j++) {
@@ -38,34 +23,32 @@ function findSimple($a, $b) {
 	}
 	return $array;
 }
-// 1.2.3 - двумерный массив a, b, c createTrapeze()
-$mass = [9,2,3,6,15,2,17,9,12];
+// Двумерный массив a, b, c createTrapeze()
 function createTrapeze($a) {
-	for ($i = 0, $j = 0, $array1 = []; $i < count($a)/3; $i++) {
+	for ($i = 0, $j = 0, $array = []; $i < count($a)/3; $i++) {
 		for($let = 'a'; $let <= 'c'; $let++, $j++) {
-			$array1[$i][$let] = $a[$j];
+			$array[$i][$let] = $a[$j];
 		}
 	}
-	return $array1;
+	return $array;
 }
-// 1.2.4 - расчет площади трапеции squareTrapeze()
+// Расчет площади трапеции squareTrapeze()
 function squareTrapeze($a) {
 	for($i = 0; $i < count($a); $i++) {
 		$a[$i]['s'] = 0.5 * $a[$i]['c']*($a[$i]['a'] + $a[$i]['b']);
 	}
 	return $a;
 }
-// 1.2.5 - максимальная площадь getSizeForLimit()
+// Максимальная площадь getSizeForLimit()
 function getSizeForLimit($a, $b) {
-	for($i = 0, $m = 0, $array2 = []; $i < count($a); $i++) {
+	for($i = 0, $m = 0, $array = []; $i < count($a); $i++) {
 		if ($a[$i]['s'] > $m && $a[$i]['s'] < $b) {
-			$array2 = $a[$i];
+			$array = $a[$i];
 		}
 	}
-	return $array2;
+	return $array;
 }
-
-// 1.2.6 - минимальное число в массиве getMin()
+// Минимальное число в массиве getMin()
 $array3 = array('один' => 2000, 'два' => 3000, 'три' => 500);
 function getMin($a) {
 	$min === null;
@@ -76,7 +59,7 @@ function getMin($a) {
 	}
 	return $min;
 }
-// 1.2.7 - вывод таблицы с размерами трапеций printTrapeze()
+// Таблицы с размерами трапеций printTrapeze()
 function printTrapeze($a) {
 	echo "
 		<table border='2'>
@@ -105,39 +88,26 @@ function printTrapeze($a) {
 	}
 	echo "</table>";
 }
-// 1.2.8 - класс BaseMath
-class BaseMath {
-	public $a;
-	public $b;
-	public $c;
-	public function __construct($a,$b,$c) {
-		$this->a = $a;
-		$this->b = $b;
-		$this->c = $c;
-	}
-	function exp1() {
-		$exp1 = $this->a * ($this->b ^ $this->c);
-		return $exp1;
-	}
-	function exp2() {
-		$exp2 = ($this->a / $this->b) ^ $this->c;
-		return $exp2;
-	}
-	function getValue() {
-		$classF1 = new F1($this->a, $this->b, $this->c);
-	}
-}
-// 1.2.9 - класс F1
-class F1 extends BaseMath {
-	public $f;
-    public function __construct($a, $b, $c) {
-        parent::__construct($a, $b, $c);
-        $f = ($this->a*($this->b^$this->c)+((($this->a/$this->c)^$this->b)%3)^min($this->a,$this->b,$this->c));
-    }
-}
 
-// -----Вывод заданий в браузер
-// 1.2.7
-printTrapeze(squareTrapeze(createTrapeze($mass)));
+// Вывод
+$a = [9,2,3,6,15,2,17,9,12];
 
-*/
+// Реализовать функцию getSizeForLimit($a, $b). $a – массив результата выполнения функции squareTrapeze(), $b – максимальная площадь. Результат ее выполнение: массив размеров трапеции с максимальной площадью, но меньше или равной $b.
+// Замечание. Вызов функция getSizeForLimit([['s' => 2], ['s' => 3], ['s' => 1]], 2) возвращает неправильный результат, должен вернуть ['s' => 2].
+// Я наверное не совсем правильно понял задачу. Ниже в дебаги я подаю массив, который содержит в значениях стороны и площадь для нескольких трапеций. Вторым аргументом я задаю максимальную площадь. Функция возвращает трапецию, у которой площадь максимальная в диапазоне до значения записанного в аргумнте b.
+
+echo "Создан массив, разбит на тройки, прибавлена площадь:";
+debug(squareTrapeze(createTrapeze($a)));
+echo "Подаем в функцию массив, выводим массив с максимальной площадью, но меньше 20";
+debug(getSizeForLimit(squareTrapeze(createTrapeze($a)), 20));
+echo "Подаем в функцию массив, выводим массив с максимальной площадью, но меньше 50";
+debug(getSizeForLimit(squareTrapeze(createTrapeze($a)), 50));
+echo "Подаем в функцию массив, выводим массив с максимальной площадью, но меньше 500";
+debug(getSizeForLimit(squareTrapeze(createTrapeze($a)), 500));
+echo "<hr>";
+printTrapeze(squareTrapeze(createTrapeze($a)));
+echo "<hr>";
+
+$abc = new F1 (11, 22, 33);
+// debug($abc);
+echo $abc->getValue() . "<br>";
