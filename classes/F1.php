@@ -8,6 +8,6 @@ class F1 extends BaseMath
     $this->a = $a;
     $this->b = $b;
     $this->c = $c;
-    $this->f = ($this->exp1($this->a, $this->b, $this->c) + ($this->exp2($this->a, $this->b, $this->c)%3)^min($this->a,$this->b,$this->c));
+    $this->f = ($this->exp1($a, $b, $c) + ($this->exp2($a, $b, $c)%3)^min($a, $b, $c));
   }
 }

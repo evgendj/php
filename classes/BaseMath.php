@@ -3,11 +3,11 @@
 abstract class BaseMath
 {
   function exp1($a, $b, $c) {
-    return $this->a * ($this->b ^ $this->c);
+    return $a * ($b ^ $c);
   }
 
   function exp2($a, $b, $c) {
-    return ($this->a / $this->b) ^ $this->c;
+    return ($a / $b) ^ $c;
   }
 
   function getValue() {
