@@ -922,12 +922,25 @@ DROP DATABASE wet; // удаление базы данных
 CREATE DATABASE wet DEFAULT CHARACTER SET utf-8; // Создание бд с конкретной кодировкой.
 USE test_samson; // Выбор базы данных
 // создаем подключение к бд сразу с перехватом ошибки, если нет подключения. Первый параметр 'mysql:host=localhost;dbname=test_samson': mysql - название драйвера или программы подключаемой базы данных (mysql:host=localhost; для локального сервера), далее адрес сервера и название бд. Второй параметр имя пользоваталя (root для локального сервера). Если пароля нет, просто одинарные кавычки без пробела внутри. Делается отдельным файлом, затем подключается в основной файл через require_once('connect_db.php');
+// Без этого , [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION] будет тоже работать, но не будет расписывать характер ошибки, ее сложнее будет вычислить - это режим генерации исключений
 try {
-  $db = new PDO('mysql:host=localhost;dbname=test_samson', 'root', ''); // Создается объект для работы с БД
+  $pdo = new PDO('mysql:host=localhost;dbname=test_samson', 'root', '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 } catch (PDOException $e) {
   echo "Невозможно установить соединение с базой данных";} // Вывод ошибки в случае ошибки подключения к БД
 --------------------------  ТИПЫ ПОЛЕЙ  ----------------------------------------
 пока просто прочитал
+
+CREATE TABLE // Создание таблицы
+try {
+  $query = $pdo->exec("CREATE TABLE catalogs (
+            id_catalog INT(11) NOT NULL AUTO_INCREMENT,
+            name VARCHAR(255) NOT NULL,
+            PRIMARY KEY (id_catalog))");
+} catch (PDOEXception $e) {
+  echo "Не удалось создать таблицу " . $e->getMessage();}
+DROP TABLE // удаление таблицы
+$query = $pdo->exec("DROP TABLE catalogs"); // остальное тоже, меняется только эта переменная в примерах
+
 
 SHOW TABLES; // Покажет таблицы в текущей бд
 
