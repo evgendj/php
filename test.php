@@ -1,10 +1,5 @@
+<!-- Скляр - 198  ***  В подлиннике - 697 (Прочитай типы полей - 664) -->
+
 <?php
 
-$content = file_get_contents('product.xml');
-$product = new SimpleXMLElement($content);
-foreach ($product->xpath('//Товар') as $price) {
-  echo $price['Название'], ' ';
-}
-
-
-// https://www.php.net/manual/ru/simplexml.examples-basic.php
+require_once('connect_db.php');
