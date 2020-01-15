@@ -1,13 +1,13 @@
-<!-- Скляр - 204  ***  В подлиннике - 698 (Работа в sql - 668) -->
+<!-- Скляр - 204  ***  В подлиннике - 698 (Работа в sql - 674) -->
 
 <?php
 
-require_once('connect_db.php');
+require_once('connect_db_forum.php');
 
-// Формируем и выполняем SQL-запрос
+// Изменяем только тип, при этом имя должно посторяться
 
 try {
-  $query = $pdo->exec("SHOW TABLES");
+  $query = $pdo->exec("ALTER TABLE forums DROP new_test");
 } catch (PDOEXception $e) {
-  echo "Не удалось удалить таблицу " . $e->getMessage();
+  echo "Не удалось создать таблицу " . $e->getMessage();
 }
