@@ -1,16 +1,29 @@
-<!-- Скляр - 215  ***  В подлиннике - 698 (Работа в sql - 686) -->
+<!-- Скляр - 215  ***  В подлиннике - 704 -->
 
 <?php
 
 require_once('connect_db_forum.php');
 
-// Изменяем только тип, при этом имя должно посторяться
+$content = file_get_contents('product.xml');
+$product = new SimpleXMLElement($content);
 
-$q = $pdo->query("SELECT * FROM catalogs WHERE id > 2 AND id < 10");
+foreach ($product->Товар[2]->Разделы as $product) {
+  echo $product->Раздел[1];
+}
+
+
+
+
+
+
+
+
+/*
+$q = $pdo->query("SELECT * FROM catalogs WHERE id NOT IN (8,9)");
 while ($row = $q->fetch()) {
   echo "$row[0] - $row[1]<br>";
 }
-
+*/
 
 /*
 try {
