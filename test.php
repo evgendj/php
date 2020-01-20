@@ -4,12 +4,7 @@
 
 require_once('connect_db_forum.php');
 
-$content = file_get_contents('product.xml');
-$product = new SimpleXMLElement($content);
 
-foreach ($product->Товар[2]->Разделы as $product) {
-  echo $product->Раздел[1];
-}
 
 
 
