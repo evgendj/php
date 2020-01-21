@@ -2,12 +2,25 @@
 
 <?php
 
-require_once('connect_db_forum.php');
+function debug($data) {
+	echo "<pre>" . print_r($data, 1) . "</pre>";
+}
+
+require_once('connect_db.php');
+
+$content = file_get_contents('product.xml');
+$product = new SimpleXMLElement($content);
 
 
-
-
-
+for ($i = 0, $cat_code = 1; $i < $product->Товар->count(); $i++, $cat_code++) {
+  foreach ($product->Товар[$i]->Разделы->Раздел as $value) {
+    try {
+      $exec = $pdo->exec("INSERT INTO a_category VALUES (NULL, $cat_code, '$value', DEFAULT)");
+    } catch (PDOException $e) {
+      echo "Ошибка загузки в базу данных" . $e->getMessage();
+    }
+  }
+}
 
 
 
