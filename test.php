@@ -1,4 +1,4 @@
-<!-- Скляр - 215  ***  В подлиннике - 704 -->
+<!-- Скляр - 215  ***  В подлиннике - 704 (Не записал 689-693 - Сортировка записей)-->
 
 <?php
 
@@ -6,17 +6,22 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-https://snipp.ru/php/manual-pdo
-
 require_once('connect_db.php');
 
 $content = file_get_contents('product.xml');
 $product = new SimpleXMLElement($content);
 
 $query = $pdo->query("SELECT * FROM a_category WHERE category_name LIKE 'Бумага'");
+$category = $query->fetch(PDO::FETCH_ASSOC);
 
-debug($query);
+debug($category);
+if ($category['category_name'] == 'Бумага') {
+	echo "Есть";
+} else {
+	echo "Нету";
+}
 
+// Ввод категорий без защиты
 /*
 for ($i = 0, $cat_code = 1; $i < $product->Товар->count(); $i++, $cat_code++) {
   foreach ($product->Товар[$i]->Разделы->Раздел as $value) {
@@ -28,8 +33,6 @@ for ($i = 0, $cat_code = 1; $i < $product->Товар->count(); $i++, $cat_code+
   }
 }
 */
-
-
 
 
 /*
