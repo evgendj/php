@@ -997,6 +997,10 @@ $q = $pdo->query("SELECT * FROM catalogs WHERE name LIKE 'Память'"); // в
 $a = $q->fetch(PDO::FETCH_ASSOC); // выбраная запись помещается в ассоцитивный массив
 echo $a['name']; // печатаем значение конкретного столбца
 
+prepare() execute() // Чтобы обезопасить ввод данных в базу, есть специальные методы
+$exec = $pdo->prepare("INSERT INTO a_category VALUES (NULL, $cat_code, ?, DEFAULT)"); // Вместо данных которые из вне, ставим вопрос или :id
+$exec->execute([$value]); // Тут обязательно должен быть массив, и вводим просто значение для вопроса либо ['id' => 1]
+
 SELECT // Выбор записей из таблицы. Можно сделать часть выборки, можно столбцы менять местами
 $q = $pdo->query("SELECT id, name FROM catalogs");
 while ($row = $q->fetch()) { // Возвращает массив и присваивает переменной
