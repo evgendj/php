@@ -2,6 +2,20 @@
 
 // Разница между TEXT и TUNYTEXT всего 1 байт, не следует экономить, поскольку размер плавающий и не будет занимать много памяти.
 try {
+  $a_product = $pdo->exec(
+    "CREATE TABLE a_product (
+      product_id INT(11) NOT NULL AUTO_INCREMENT,
+      code VARCHAR(255),
+      name VARCHAR(255),
+      PRIMARY KEY (product_id)
+    )"
+  );
+
+  
+}
+
+
+try {
   $query = $pdo->exec(
     "CREATE TABLE authors ( // Создание таблицы с пользователями форума
       id INT(11) NOT NULL AUTO_INCREMENT,
