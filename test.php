@@ -8,6 +8,20 @@ function debug($data) {
 
 require_once('connect_db.php');
 
+$xml = file_get_contents('product.xml');
+$product = new SimpleXMLElement($xml);
+
+try {
+	for ($i = 0; $i < $product->Товар->count(); $i++) {
+		$insert_product = $pdo->prepare("INSERT INTO a_product VALUES (NULL, ?, ?)");
+		$insert_product->execute([$product->Товар[$i]->attributes()->{'Код'}, $product->Товар[$i]->attributes()->{'Название'}]);
+	}
+
+} catch (PDOException $e) {
+	echo "Ошибка загрузки в базу данных" . $e->getMessage();
+}
+
+/*
 $content = file_get_contents('product.xml');
 $product = new SimpleXMLElement($content);
 
@@ -36,7 +50,49 @@ try {
 } catch (PDOException $e) {
   echo "Ошибка загузки в базу данных" . $e->getMessage();
 }
+*/
 
+// Создание таблиц
+/*
+try {
+  $a_product = $pdo->exec(
+    "CREATE TABLE a_product (
+      product_id INT(11) NOT NULL AUTO_INCREMENT,
+      code VARCHAR(255),
+      name VARCHAR(255),
+      PRIMARY KEY (product_id)
+    )"
+  );
+
+  $a_property = $pdo->exec(
+    "CREATE TABLE a_property (
+      product_id INT(11) NOT NULL,
+      name VARCHAR(255),
+      property VARCHAR(255)
+    )"
+  );
+
+  $a_price = $pdo->exec(
+    "CREATE TABLE a_price (
+      product_id INT(11) NOT NULL,
+      type VARCHAR(255),
+      price DECIMAL(15,2)
+    )"
+  );
+
+  $a_category =$pdo->exec(
+    "CREATE TABLE a_category (
+      category_id INT(11) NOT NULL AUTO_INCREMENT,
+      code VARCHAR(255),
+      name VARCHAR(255),
+      parent_id INT(11) NOT NULL DEFAULT 0,
+      PRIMARY KEY (category_id)
+    )"
+  );
+} catch (PDOEXception $e) {
+  echo "Не удалось создать таблицу " . $e->getMessage();
+}
+*/
 
 
 // Ввод категорий без защиты
