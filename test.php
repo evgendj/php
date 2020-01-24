@@ -8,9 +8,18 @@ function debug($data) {
 
 require_once('connect_db.php');
 
-// Дэбаги
 $xml = file_get_contents('product.xml');
 $product = new SimpleXMLElement($xml);
+
+// Дэбаги
+echo "Цикл свойств";
+debug($product->Товар[0]->Свойства);
+foreach ($product->Товар[0]->Свойства as $v) {
+	debug($v);
+	foreach ($v as $key => $value) {
+		echo $key . " " . $value . "<br>";
+	}
+}
 
 echo "Цикл первого товара";
 debug($product->Товар);
@@ -41,6 +50,17 @@ try {
 		foreach ($product->Товар[$i]->Цена as $price) {
 			$insert_price->execute([$price['Тип'], $price]);
 		}
+
+		// Загружаем свойства
+		$insert_properties = $pdo->prepare("INSERT INTO a_property VALUES ($product_id, ?, ?)");
+		foreach ($product->Товар[$i]->Свойства as $properties) {
+			foreach ($properties as $property => $value) {
+				$insert_properties->execute([$property, $value]);
+			}
+		}
+
+		// Загружаем разделы
+		$insert_category = $pdo->prepare("INSERT INTO a_category VALUES (NULL, NULL, ?, DEFAULT)");
 	}
 
 } catch (PDOException $e) {
