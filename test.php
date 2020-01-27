@@ -11,30 +11,14 @@ require_once('connect_db.php');
 $xml = file_get_contents('product.xml');
 $product = new SimpleXMLElement($xml);
 
+/*
 // Дэбаги
-echo "Цикл свойств";
-debug($product->Товар[0]->Свойства);
-foreach ($product->Товар[0]->Свойства as $v) {
-	debug($v);
-	foreach ($v as $key => $value) {
-		echo $key . " " . $value . "<br>";
-	}
-}
-
-echo "Цикл первого товара";
-debug($product->Товар);
-
-echo "Цикл атрибутов товара";
-debug($product->Товар->attributes());
-
-echo "Цикл цен";
-debug($product->Товар->Цена[0]);
-
-echo "Вывод и атрибута и значения тэга в цикле<br>";
-foreach ($product->Товар->Цена as $price) {
-	echo $price['Тип'] . "=" . $price . "<br>";
-}
+$a[] = 10;
+$a[] = 20;
+debug($a);
+echo count($a);
 // Конец дэбагов
+*/
 
 
 try {
@@ -59,13 +43,28 @@ try {
 			}
 		}
 
-		// Загружаем разделы
-		$insert_category = $pdo->prepare("INSERT INTO a_category VALUES (NULL, NULL, ?, DEFAULT)");
+		// Загружаем разделы, вложенность разделов и связь с товаром
+		$insert_category = $pdo->prepare("INSERT INTO a_category VALUES (NULL, NULL, ?, ?)");
+		$product_in_category = $pdo->prepare("INSERT INTO a_product_category VALUES (?, ?)");
+		foreach ($product->Товар[$i]->Разделы->Раздел as $category_name) {
+			$query_category = $pdo->query("SELECT * FROM a_category WHERE name LIKE '$category_name'");
+			$category = $query_category->fetch(PDO::FETCH_ASSOC);
+			if ($category['name'] == $category_name) {
+				$category_id[] = $category['category_id'];
+			} else {
+				$parent_id = 0;
+				$insert_category->execute([$category_name, $parent_id]);
+				$parent_id = $category['category_id'];
+				$category_id[] = $pdo->lastInsertId();
+			}
+		}
+		debug($category_id);
+		unset($category_id);
 	}
-
 } catch (PDOException $e) {
 	echo "Ошибка загрузки в базу данных" . $e->getMessage();
 }
+
 
 
 /*
@@ -98,6 +97,41 @@ try {
   echo "Ошибка загузки в базу данных" . $e->getMessage();
 }
 */
+
+
+/*
+// Дэбаги
+echo "Цикл разделов<br>";
+foreach ($product->Товар[2]->Разделы->Раздел as $v) {
+	echo $v . "<br>";
+}
+echo $product->Товар[2]->Разделы->Раздел->count();
+
+echo "<br><br>Цикл свойств";
+debug($product->Товар[0]->Свойства);
+foreach ($product->Товар[0]->Свойства as $v) {
+	debug($v);
+	foreach ($v as $key => $value) {
+		echo $key . " " . $value . "<br>";
+	}
+}
+
+echo "Цикл первого товара";
+debug($product->Товар);
+
+echo "Цикл атрибутов товара";
+debug($product->Товар->attributes());
+
+echo "Цикл цен";
+debug($product->Товар->Цена[0]);
+
+echo "Вывод и атрибута и значения тэга в цикле<br>";
+foreach ($product->Товар->Цена as $price) {
+	echo $price['Тип'] . "=" . $price . "<br>";
+}
+// Конец дэбагов
+*/
+
 
 
 // Ввод категорий без защиты
