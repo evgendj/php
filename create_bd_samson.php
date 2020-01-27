@@ -2,16 +2,6 @@
 
 require_once('connect_db.php');
 
-// Чистка таблиц
-try {
-  $del1 = $pdo->exec("DELETE FROM a_product");
-  $del2 = $pdo->exec("DELETE FROM a_property");
-  $del3 = $pdo->exec("DELETE FROM a_price");
-  $del4 = $pdo->exec("DELETE FROM a_category");
-  $del5 = $pdo->exec("DELETE FROM a_product_category");
-} catch (PDOEXception $e) {
-  echo "Не удалось очистить таблицу " . $e->getMessage();
-}
 /*
 // Создание таблиц Самсон
 try {
@@ -62,3 +52,15 @@ try {
   echo "Не удалось создать таблицу " . $e->getMessage();
 }
 */
+
+
+// Чистка таблиц
+try {
+  $del1 = $pdo->exec("DELETE FROM a_product");
+  $del2 = $pdo->exec("DELETE FROM a_property");
+  $del3 = $pdo->exec("DELETE FROM a_price");
+  $del4 = $pdo->exec("DELETE FROM a_category");
+  $del5 = $pdo->exec("DELETE FROM a_product_category");
+} catch (PDOEXception $e) {
+  echo "Не удалось очистить таблицу " . $e->getMessage();
+}
