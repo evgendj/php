@@ -11,18 +11,8 @@ require_once('connect_db.php');
 $xml = file_get_contents('product.xml');
 $product = new SimpleXMLElement($xml);
 
-/*
-// Дэбаги
-$a[] = 10;
-$a[] = 20;
-debug($a);
-echo count($a);
-// Конец дэбагов
-*/
-
-
 try {
-	for ($i = 0; $i < $product->Товар->count(); $i++) {
+	for ($i = 0, $parent_id = 0; $i < $product->Товар->count(); $i++) {
 
 		// Загружаем код и имя продукта, извлекаем id
 		$insert_product = $pdo->prepare("INSERT INTO a_product VALUES (NULL, ?, ?)");
@@ -43,23 +33,24 @@ try {
 			}
 		}
 
-		// Загружаем разделы, вложенность разделов и связь с товаром
+		// Загружаем разделы, вложенность разделов и связь разделов с товаром
 		$insert_category = $pdo->prepare("INSERT INTO a_category VALUES (NULL, NULL, ?, ?)");
 		$product_in_category = $pdo->prepare("INSERT INTO a_product_category VALUES (?, ?)");
 		foreach ($product->Товар[$i]->Разделы->Раздел as $category_name) {
 			$query_category = $pdo->query("SELECT * FROM a_category WHERE name LIKE '$category_name'");
 			$category = $query_category->fetch(PDO::FETCH_ASSOC);
 			if ($category['name'] == $category_name) {
-				$category_id[] = $category['category_id'];
-			} else {
-				$parent_id = 0;
-				$insert_category->execute([$category_name, $parent_id]);
 				$parent_id = $category['category_id'];
-				$category_id[] = $pdo->lastInsertId();
+				$product_in_category->execute([$product_id, $category['category_id']]);
+				// $category_id[] = $category['category_id'];
+			} else {
+				$insert_category->execute([$category_name, $parent_id]);
+				$parent_id = $pdo->lastInsertId();
+				$product_in_category->execute([$product_id, $pdo->lastInsertId()]);
+				// $category_id[] = $pdo->lastInsertId();
 			}
 		}
-		debug($category_id);
-		unset($category_id);
+		$parent_id = 0;
 	}
 } catch (PDOException $e) {
 	echo "Ошибка загрузки в базу данных" . $e->getMessage();
