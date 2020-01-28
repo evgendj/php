@@ -1,20 +1,36 @@
 <!-- Скляр - 215  ***  В подлиннике - 704 (Не записал 689-693 - Сортировка записей)-->
 
 <?php
-
 function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-// Реализовать функцию exportXml($a, $b)
 // $a – путь к xml файлу вида (структура файла приведена ниже)
 // $b – код рубрики
 // выбрать из БД товары (и их характеристики, необходимые для формирования файла) выходящие в рубрику $b или в любую из всех вложенных в нее рубрик, сохранить результат в файл $a.
 
+
+require_once('connect_db.php');
+
+$xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
+$products = new SimpleXMLElement($xml);
+
+$product = $products->addChild('Товар');
+
+$product->addChild()
+
+debug($product);
+
+
 // Функция exportXml($a, $b)
 function exportXml($a, $b) {
 	require_once('connect_db.php');
+
+	$xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
+	$product = new SimpleXMLElement();
 }
+
+
 
 /* - тут функция первая по загрузке xml
 function importXml($a) {
