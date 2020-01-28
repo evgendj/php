@@ -14,20 +14,38 @@ require_once('connect_db.php');
 
 $xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
 $products = new SimpleXMLElement($xml);
+$a = 'a.xml';
+$b = 1;
 
-$product = $products->addChild('Товар');
+$product_tag = $products->addChild('Товар');
+$product_tag->addAttribute('Тип', 'Базовая');
+	$product_tag->addChild('Цена');
 
-$product->addChild()
+	$properties_tag = $product_tag->addChild('Свойства');
+		$properties_tag->addChild('Плотность');
 
-debug($product);
+	$product_tag->addChild('Разделы');
+
+debug($product_tag);
+
+
+try {
+	$category_query = $pdo->query("SELECT * FROM a_category WHERE code = $b");
+	$category = $category_query->fetch(PDO::FETCH_ASSOC);
+	echo $category['name'];
+	debug($category);
+} catch (PDOException $e) {
+	echo "Ошибка выполнения запроса " . $e->getMessage();
+}
+
+$products->asXML($a);
 
 
 // Функция exportXml($a, $b)
 function exportXml($a, $b) {
 	require_once('connect_db.php');
 
-	$xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
-	$product = new SimpleXMLElement();
+
 }
 
 
