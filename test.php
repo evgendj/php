@@ -18,22 +18,35 @@ $a = 'a.xml';
 $b = 1;
 
 $product_tag = $products->addChild('Товар');
-$product_tag->addAttribute('Тип', 'Базовая');
-	$product_tag->addChild('Цена');
+
+	$price_tag = $product_tag->addChild('Цена', 11.50);
+	$price_tag->addAttribute('Тип', 'Базовая');
+	$price_tag = $product_tag->addChild('Цена', 12.50);
+	$price_tag->addAttribute('Тип', 'Москва');
 
 	$properties_tag = $product_tag->addChild('Свойства');
-		$properties_tag->addChild('Плотность');
+		$properties_tag->addChild('Плотность', 100);
+		$properties_tag->addChild('Белизна', 150);
 
-	$product_tag->addChild('Разделы');
-
-debug($product_tag);
-
+	$catalogs_tag = $product_tag->addChild('Разделы');
+		$catalogs_tag->addChild('Раздел', 'Бумага');
 
 try {
-	$category_query = $pdo->query("SELECT * FROM a_category WHERE code = $b");
-	$category = $category_query->fetch(PDO::FETCH_ASSOC);
-	echo $category['name'];
-	debug($category);
+	// Выбираем категорию с требуемым кодом
+	$category_q = $pdo->query("SELECT * FROM a_category WHERE code = $b");
+	$category = $category_q->fetch(PDO::FETCH_ASSOC);
+
+	// Определяем id товаров, соответствующих требуемой категории
+	$product_cat_q = $pdo->query("SELECT * FROM a_product_category WHERE category_id = $category[category_id]");
+	while($product_category = $product_cat_q->fetch(PDO::FETCH_ASSOC)) {
+		$product_q = $pdo->query("SELECT * FROM a_product WHERE product_id = $product_category[product_id]");
+		$product = $product_q->fetch(PDO::FETCH_ASSOC);
+		$product_tag = $products->addChild('Товар');
+		$product_tag->addAttribute('Код', $product['code']);
+		$product_tag->addAttribute('Название', $product['name']);
+		echo $product_category['product_id'] . " - " . $product['name'];
+
+	}
 } catch (PDOException $e) {
 	echo "Ошибка выполнения запроса " . $e->getMessage();
 }
