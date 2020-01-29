@@ -10,62 +10,53 @@ function debug($data) {
 // выбрать из БД товары (и их характеристики, необходимые для формирования файла) выходящие в рубрику $b или в любую из всех вложенных в нее рубрик, сохранить результат в файл $a.
 
 
-require_once('connect_db.php');
-
-$a = 'a.xml';
-$b = 3;
-
-$xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
-$products = new SimpleXMLElement($xml);
-$product_tag = $products->addChild('Товар');
-
-
-try {
-	// Выбираем категорию с требуемым кодом.
-	$category_q = $pdo->query("SELECT * FROM a_category WHERE code = $b");
-	$category = $category_q->fetch(PDO::FETCH_ASSOC);
-
-	// Выбираем id товаров, соответствующих требуемой категории. Формируем код и название товара.
-	$product_cat_q = $pdo->query("SELECT * FROM a_product_category WHERE category_id = $category[category_id]");
-	while ($product_category = $product_cat_q->fetch(PDO::FETCH_ASSOC)) {
-		$product_q = $pdo->query("SELECT * FROM a_product WHERE product_id = $product_category[product_id]");
-		$product = $product_q->fetch(PDO::FETCH_ASSOC);
-		$product_tag = $products->addChild('Товар');
-		$product_tag->addAttribute('Код', $product['code']);
-		$product_tag->addAttribute('Название', $product['name']);
-
-		// Выбираем цены, формируем тип цены и значение.
-		$price_q = $pdo->query("SELECT * FROM a_price WHERE product_id = $product[product_id]");
-		while ($price = $price_q->fetch(PDO::FETCH_ASSOC)) {
-			$price_tag = $product_tag->addChild('Цена', $price['price']);
-			$price_tag->addAttribute('Тип', $price['type']);
-		}
-
-		// Выбираем и формируем свойства
-		$properties_tag = $product_tag->addChild('Свойства');
-		$property_q = $pdo->query("SELECT * FROM a_property WHERE product_id = $product[product_id]");
-		while ($property = $property_q->fetch(PDO::FETCH_ASSOC)) {
-			$properties_tag->addChild($property['name'], $property['property']);
-		}
-
-		// Формируем категории
-		$catalogs_tag = $product_tag->addChild('Разделы');
-		$catalogs_tag->addChild('Раздел', $category['name']);
-	}
-} catch (PDOException $e) {
-	echo "Ошибка выполнения запроса " . $e->getMessage();
-}
-
-$products->asXML($a);
-
-
 // Функция exportXml($a, $b)
 function exportXml($a, $b) {
 	require_once('connect_db.php');
+	$xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
+	$products = new SimpleXMLElement($xml);
+	$product_tag = $products->addChild('Товар');
 
+	try {
+		// Выбираем категорию с требуемым кодом.
+		$category_q = $pdo->query("SELECT * FROM a_category WHERE code = $b");
+		$category = $category_q->fetch(PDO::FETCH_ASSOC);
 
+		// Выбираем id товаров, соответствующих требуемой категории. Формируем код и название товара.
+		$product_cat_q = $pdo->query("SELECT * FROM a_product_category WHERE category_id = $category[category_id]");
+		while ($product_category = $product_cat_q->fetch(PDO::FETCH_ASSOC)) {
+			$product_q = $pdo->query("SELECT * FROM a_product WHERE product_id = $product_category[product_id]");
+			$product = $product_q->fetch(PDO::FETCH_ASSOC);
+			$product_tag = $products->addChild('Товар');
+			$product_tag->addAttribute('Код', $product['code']);
+			$product_tag->addAttribute('Название', $product['name']);
+
+			// Выбираем цены, формируем тип цены и значение.
+			$price_q = $pdo->query("SELECT * FROM a_price WHERE product_id = $product[product_id]");
+			while ($price = $price_q->fetch(PDO::FETCH_ASSOC)) {
+				$price_tag = $product_tag->addChild('Цена', $price['price']);
+				$price_tag->addAttribute('Тип', $price['type']);
+			}
+
+			// Выбираем и формируем свойства
+			$properties_tag = $product_tag->addChild('Свойства');
+			$property_q = $pdo->query("SELECT * FROM a_property WHERE product_id = $product[product_id]");
+			while ($property = $property_q->fetch(PDO::FETCH_ASSOC)) {
+				$properties_tag->addChild($property['name'], $property['property']);
+			}
+
+			// Формируем категории
+			$catalogs_tag = $product_tag->addChild('Разделы');
+			$catalogs_tag->addChild('Раздел', $category['name']);
+		}
+	} catch (PDOException $e) {
+		echo "Ошибка выполнения запроса " . $e->getMessage();
+	}
+	$products->asXML($a);
 }
-
+$a = 'a.xml';
+$b = 2;
+exportXml($a, $b);
 
 
 /* - тут функция первая по загрузке xml
