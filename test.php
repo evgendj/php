@@ -12,40 +12,45 @@ function debug($data) {
 
 require_once('connect_db.php');
 
+$a = 'a.xml';
+$b = 3;
+
 $xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
 $products = new SimpleXMLElement($xml);
-$a = 'a.xml';
-$b = 1;
-
 $product_tag = $products->addChild('Товар');
 
-	$price_tag = $product_tag->addChild('Цена', 11.50);
-	$price_tag->addAttribute('Тип', 'Базовая');
-	$price_tag = $product_tag->addChild('Цена', 12.50);
-	$price_tag->addAttribute('Тип', 'Москва');
-
-	$properties_tag = $product_tag->addChild('Свойства');
-		$properties_tag->addChild('Плотность', 100);
-		$properties_tag->addChild('Белизна', 150);
-
-	$catalogs_tag = $product_tag->addChild('Разделы');
-		$catalogs_tag->addChild('Раздел', 'Бумага');
 
 try {
-	// Выбираем категорию с требуемым кодом
+	// Выбираем категорию с требуемым кодом.
 	$category_q = $pdo->query("SELECT * FROM a_category WHERE code = $b");
 	$category = $category_q->fetch(PDO::FETCH_ASSOC);
 
-	// Определяем id товаров, соответствующих требуемой категории
+	// Выбираем id товаров, соответствующих требуемой категории. Формируем код и название товара.
 	$product_cat_q = $pdo->query("SELECT * FROM a_product_category WHERE category_id = $category[category_id]");
-	while($product_category = $product_cat_q->fetch(PDO::FETCH_ASSOC)) {
+	while ($product_category = $product_cat_q->fetch(PDO::FETCH_ASSOC)) {
 		$product_q = $pdo->query("SELECT * FROM a_product WHERE product_id = $product_category[product_id]");
 		$product = $product_q->fetch(PDO::FETCH_ASSOC);
 		$product_tag = $products->addChild('Товар');
 		$product_tag->addAttribute('Код', $product['code']);
 		$product_tag->addAttribute('Название', $product['name']);
-		echo $product_category['product_id'] . " - " . $product['name'];
 
+		// Выбираем цены, формируем тип цены и значение.
+		$price_q = $pdo->query("SELECT * FROM a_price WHERE product_id = $product[product_id]");
+		while ($price = $price_q->fetch(PDO::FETCH_ASSOC)) {
+			$price_tag = $product_tag->addChild('Цена', $price['price']);
+			$price_tag->addAttribute('Тип', $price['type']);
+		}
+
+		// Выбираем и формируем свойства
+		$properties_tag = $product_tag->addChild('Свойства');
+		$property_q = $pdo->query("SELECT * FROM a_property WHERE product_id = $product[product_id]");
+		while ($property = $property_q->fetch(PDO::FETCH_ASSOC)) {
+			$properties_tag->addChild($property['name'], $property['property']);
+		}
+
+		// Формируем категории
+		$catalogs_tag = $product_tag->addChild('Разделы');
+		$catalogs_tag->addChild('Раздел', $category['name']);
 	}
 } catch (PDOException $e) {
 	echo "Ошибка выполнения запроса " . $e->getMessage();
