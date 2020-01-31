@@ -12,6 +12,7 @@
 РАБОТА С ФОРМАМИ  *************26547
 SQL  *********3587632
 XML  *********87533412
+XML DOM  *****97553413
 GIT  *********34569871
 МАТЕМАТИКА  **9563214
 
@@ -1073,8 +1074,71 @@ foreach ($product->xpath('//Цена') as $price) {
 foreach ($product->xpath('//Товар') as $price) {
   echo $price['Название'], ' ';} // Бумага А4 Бумага А3
 
+// Пример для Самсона выгрузки из таб в xml
+function exportXml($a, $b) {
+	require_once('connect_db.php');
+	$xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
+	$products = new SimpleXMLElement($xml); // Создаём XML-документ версии 1.0 с кодировкой utf-8
 
+	try {
+		// Выбираем категорию с требуемым кодом.
+		$category_q = $pdo->query("SELECT * FROM a_category WHERE code = $b");
+		$category = $category_q->fetch(PDO::FETCH_ASSOC);
 
+		// Выбираем id товаров, соответствующих требуемой категории. Формируем код и название товара.
+		$product_cat_q = $pdo->query("SELECT * FROM a_product_category WHERE category_id = $category[category_id]");
+		while ($product_category = $product_cat_q->fetch(PDO::FETCH_ASSOC)) {
+			$product_q = $pdo->query("SELECT * FROM a_product WHERE product_id = $product_category[product_id]");
+			$product = $product_q->fetch(PDO::FETCH_ASSOC);
+			$product_tag = $products->addChild('Товар');
+			$product_tag->addAttribute('Код', $product['code']);
+			$product_tag->addAttribute('Название', $product['name']);
+
+			// Выбираем цены, формируем тип цены и значение.
+			$price_q = $pdo->query("SELECT * FROM a_price WHERE product_id = $product[product_id]");
+			while ($price = $price_q->fetch(PDO::FETCH_ASSOC)) {
+				$price_tag = $product_tag->addChild('Цена', $price['price']);
+				$price_tag->addAttribute('Тип', $price['type']);
+			}
+
+			// Выбираем и формируем свойства
+			$properties_tag = $product_tag->addChild('Свойства');
+			$property_q = $pdo->query("SELECT * FROM a_property WHERE product_id = $product[product_id]");
+			while ($property = $property_q->fetch(PDO::FETCH_ASSOC)) {
+				$properties_tag->addChild($property['name'], $property['property']);
+			}
+
+			// Формируем категории
+			$catalogs_tag = $product_tag->addChild('Разделы');
+			$catalogs_tag->addChild('Раздел', $category['name']);
+		}
+	} catch (PDOException $e) {
+		echo "Ошибка выполнения запроса " . $e->getMessage();
+	}
+	$products->asXML($a);
+}
+$a = 'a.xml';
+$b = 2;
+exportXml($a, $b);
+
+**************************  XML DOM  *********97553413**************************
+$dom = new domDocument("1.0", "utf-8"); // Создаём XML-документ версии 1.0 с кодировкой utf-8
+$dom->formatOutput=true; // Делаем перенос строки
+$root = $dom->createElement("users"); // Создаём корневой элемент
+$dom->appendChild($root);
+$logins = array("User1", "User2", "User3"); // Логины пользователей
+$passwords = array("Pass1", "Pass2", "Pass3"); // Пароли пользователей
+for ($i = 0; $i < count($logins); $i++) {
+  $id = $i + 1; // id-пользователя
+  $user = $dom->createElement("user"); // Создаём узел "user"
+  $user->setAttribute("id", $id); // Устанавливаем атрибут "id" у узла "user"
+  $login = $dom->createElement("login", $logins[$i]); // Создаём узел "login" с текстом внутри
+  $password = $dom->createElement("password", $passwords[$i]); // Создаём узел "password" с текстом внутри
+  $user->appendChild($login); // Добавляем в узел "user" узел "login"
+  $user->appendChild($password);// Добавляем в узел "user" узел "password"
+  $root->appendChild($user); // Добавляем в корневой узел "users" узел "user"
+}
+$dom->save("users.xml"); // Сохраняем полученный XML-документ в файл
 
 
 

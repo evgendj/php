@@ -5,17 +5,67 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-// $a – путь к xml файлу вида (структура файла приведена ниже)
-// $b – код рубрики
-// выбрать из БД товары (и их характеристики, необходимые для формирования файла) выходящие в рубрику $b или в любую из всех вложенных в нее рубрик, сохранить результат в файл $a.
+/*
+$dom = new domDocument("1.0", "utf-8"); // Создаём XML-документ версии 1.0 с кодировкой utf-8
+ $dom->formatOutput=true; // Делаем перенос строки
+
+ $root = $dom->createElement("users"); // Создаём корневой элемент
+$dom->appendChild($root);
+
+$logins = array("User1", "User2", "User3"); // Логины пользователей
+$passwords = array("Pass1", "Pass2", "Pass3"); // Пароли пользователей
+for ($i = 0; $i < count($logins); $i++) {
+  $id = $i + 1; // id-пользователя
+  $user = $dom->createElement("user"); // Создаём узел "user"
+  $user->setAttribute("id", $id); // Устанавливаем атрибут "id" у узла "user"
+  $login = $dom->createElement("login", $logins[$i]); // Создаём узел "login" с текстом внутри
+  $password = $dom->createElement("password", $passwords[$i]); // Создаём узел "password" с текстом внутри
+  $user->appendChild($login); // Добавляем в узел "user" узел "login"
+  $user->appendChild($password);// Добавляем в узел "user" узел "password"
+  $root->appendChild($user); // Добавляем в корневой узел "users" узел "user"
+}
+$dom->save("users.xml"); // Сохраняем полученный XML-документ в файл
 
 
+require_once('connect_db.php');
+$dom = new domDocument("1.0", "utf-8");
+$dom->formatOutput=true;
+$root = $dom->createelement('Товары');
+$dom->appendChild($root);
+
+try {
+	// Выбираем категорию с требуемым кодом.
+	$category_q = $pdo->query("SELECT * FROM a_category WHERE code = 2");
+	$category = $category_q->fetch(PDO::FETCH_ASSOC);
+
+	// Выбираем id товаров, соответствующих требуемой категории. Формируем код и название товара.
+	$product_cat_q = $pdo->query("SELECT * FROM a_product_category WHERE category_id = $category[category_id]");
+	while ($product_category = $product_cat_q->fetch(PDO::FETCH_ASSOC)) {
+		$product_q = $pdo->query("SELECT * FROM a_product WHERE product_id = $product_category[product_id]");
+		$product = $product_q->fetch(PDO::FETCH_ASSOC);
+		$product_tag = $dom->createElement('Товар');
+		$product_tag->setAttribute('Код', $product['code']);
+		$product_tag->setAttribute('Название', $product['name']);
+		$root->appendChild($product_tag);
+	}
+
+
+
+} catch (PDOException $e) {
+	echo "Ошибка выполнения запроса " . $e->getMessage();
+}
+
+
+
+$dom->save('a.xml');
+*/
 // Функция exportXml($a, $b)
 function exportXml($a, $b) {
 	require_once('connect_db.php');
-	$xml = '<?xml version="1.0" encoding="UTF-8"?><Товары></Товары>';
-	$products = new SimpleXMLElement($xml);
-	$product_tag = $products->addChild('Товар');
+	$dom = new domDocument("1.0", "utf-8");
+	$dom->formatOutput=true;
+	$root = $dom->createElement('Товары');
+	$dom->appendChild($root);
 
 	try {
 		// Выбираем категорию с требуемым кодом.
@@ -27,195 +77,40 @@ function exportXml($a, $b) {
 		while ($product_category = $product_cat_q->fetch(PDO::FETCH_ASSOC)) {
 			$product_q = $pdo->query("SELECT * FROM a_product WHERE product_id = $product_category[product_id]");
 			$product = $product_q->fetch(PDO::FETCH_ASSOC);
-			$product_tag = $products->addChild('Товар');
-			$product_tag->addAttribute('Код', $product['code']);
-			$product_tag->addAttribute('Название', $product['name']);
+			$product_tag = $dom->createElement('Товар');
+			$product_tag->setAttribute('Код', $product['code']);
+			$product_tag->setAttribute('Название', $product['name']);
 
 			// Выбираем цены, формируем тип цены и значение.
 			$price_q = $pdo->query("SELECT * FROM a_price WHERE product_id = $product[product_id]");
 			while ($price = $price_q->fetch(PDO::FETCH_ASSOC)) {
-				$price_tag = $product_tag->addChild('Цена', $price['price']);
-				$price_tag->addAttribute('Тип', $price['type']);
+				$price_tag = $dom->createElement('Цена', $price['price']);
+				$price_tag->setAttribute('Тип', $price['type']);
+				$product_tag->appendChild($price_tag);
 			}
 
 			// Выбираем и формируем свойства
-			$properties_tag = $product_tag->addChild('Свойства');
+			$properties_tag = $dom->createElement('Свойства');
 			$property_q = $pdo->query("SELECT * FROM a_property WHERE product_id = $product[product_id]");
 			while ($property = $property_q->fetch(PDO::FETCH_ASSOC)) {
-				$properties_tag->addChild($property['name'], $property['property']);
+				$property_tag = $dom->createElement($property['name'], $property['property']);
+				$properties_tag->appendChild($property_tag);
+				$product_tag->appendChild($properties_tag);
 			}
 
 			// Формируем категории
-			$catalogs_tag = $product_tag->addChild('Разделы');
-			$catalogs_tag->addChild('Раздел', $category['name']);
+			$catalogs_tag = $dom->createElement('Разделы');
+			$catalog_tag = $dom->createElement('Раздел', $category['name']);
+			$catalogs_tag->appendChild($catalog_tag);
+			$product_tag->appendChild($catalogs_tag);
+
+			$root->appendChild($product_tag);
 		}
 	} catch (PDOException $e) {
 		echo "Ошибка выполнения запроса " . $e->getMessage();
 	}
-	$products->asXML($a);
+	$dom->save($a);
 }
 $a = 'a.xml';
-$b = 2;
+$b = 1;
 exportXml($a, $b);
-
-
-/* - тут функция первая по загрузке xml
-function importXml($a) {
-	require_once('connect_db.php');
-	$xml = file_get_contents('product.xml');
-	$product = new SimpleXMLElement($xml);
-	try {
-		for ($i = 0, $parent_id = 0; $i < $product->Товар->count(); $i++) {
-
-			// Загружаем код и имя продукта, извлекаем id
-			$insert_product = $pdo->prepare("INSERT INTO a_product VALUES (NULL, ?, ?)");
-			$insert_product->execute([$product->Товар[$i]->attributes()->{'Код'}, $product->Товар[$i]->attributes()->{'Название'}]);
-			$product_id = $pdo->lastInsertId();
-
-			// Загружаем цену с типом
-			$insert_price = $pdo->prepare("INSERT INTO a_price VALUES ($product_id, ?, ?)");
-			foreach ($product->Товар[$i]->Цена as $price) {
-				$insert_price->execute([$price['Тип'], $price]);
-			}
-
-			// Загружаем свойства
-			$insert_properties = $pdo->prepare("INSERT INTO a_property VALUES ($product_id, ?, ?)");
-			foreach ($product->Товар[$i]->Свойства as $properties) {
-				foreach ($properties as $property => $value) {
-					$insert_properties->execute([$property, $value]);
-				}
-			}
-
-			// Загружаем разделы, вложенность разделов и связь разделов с товаром
-			$insert_category = $pdo->prepare("INSERT INTO a_category VALUES (NULL, NULL, ?, ?)");
-			$product_in_category = $pdo->prepare("INSERT INTO a_product_category VALUES (?, ?)");
-			foreach ($product->Товар[$i]->Разделы->Раздел as $category_name) {
-				$query_category = $pdo->query("SELECT * FROM a_category WHERE name LIKE '$category_name'");
-				$category = $query_category->fetch(PDO::FETCH_ASSOC);
-				if ($category['name'] == $category_name) {
-					$parent_id = $category['category_id'];
-					$product_in_category->execute([$product_id, $category['category_id']]);
-				} else {
-					$insert_category->execute([$category_name, $parent_id]);
-					$parent_id = $pdo->lastInsertId();
-					$product_in_category->execute([$product_id, $pdo->lastInsertId()]);
-				}
-			}
-			$parent_id = 0;
-		}
-	} catch (PDOException $e) {
-		echo "Ошибка загрузки в базу данных" . $e->getMessage();
-	}
-}
-
-$a = 'connect_db.php';
-// importXml($a);
-*/
-
-/*
-$content = file_get_contents('product.xml');
-$product = new SimpleXMLElement($content);
-
-try {
-	for ($i = 0, $cat_code = 1; $i < $product->Товар->count(); $i++, $cat_code++) {
-		foreach ($product->Товар[$i]->Разделы->Раздел as $category_name) {
-			$query = $pdo->query("SELECT * FROM a_category WHERE category_name LIKE '$category_name'");
-			$category = $query->fetch(PDO::FETCH_ASSOC);
-			if ($category['category_name'] == $category_name) {
-					$category_id = $category['category_id'];
-			} else {
-				$insert_category = $pdo->prepare("INSERT INTO a_category VALUES (NULL, $cat_code, ?, DEFAULT)");
-				$insert_category->execute([$category_name]);
-				$category_id = $pdo->lastInsertId();
-			//	echo $category_id . "<br>";
-			}
-		}
-			$insert_product = $pdo->prepare("INSERT INTO a_product VALUES (NULL, ?, ?)");
-			$insert_product->execute([$product->Товар[$i]->attributes()->{'Код'}, $product->Товар[$i]->attributes()->{'Название'}]);
-			$product_id = $pdo->lastInsertId();
-			$product_category = $pdo->exec("INSERT INTO product_category VALUES ($product_id, $category_id)");
-			//	echo $product->Товар[$i]->attributes()->{'Код'};
-			//	echo $product->Товар[$i]->attributes()->{'Название'};
-
-	}
-} catch (PDOException $e) {
-  echo "Ошибка загузки в базу данных" . $e->getMessage();
-}
-*/
-
-
-/*
-// Дэбаги
-echo "Цикл разделов<br>";
-foreach ($product->Товар[2]->Разделы->Раздел as $v) {
-	echo $v . "<br>";
-}
-echo $product->Товар[2]->Разделы->Раздел->count();
-
-echo "<br><br>Цикл свойств";
-debug($product->Товар[0]->Свойства);
-foreach ($product->Товар[0]->Свойства as $v) {
-	debug($v);
-	foreach ($v as $key => $value) {
-		echo $key . " " . $value . "<br>";
-	}
-}
-
-echo "Цикл первого товара";
-debug($product->Товар);
-
-echo "Цикл атрибутов товара";
-debug($product->Товар->attributes());
-
-echo "Цикл цен";
-debug($product->Товар->Цена[0]);
-
-echo "Вывод и атрибута и значения тэга в цикле<br>";
-foreach ($product->Товар->Цена as $price) {
-	echo $price['Тип'] . "=" . $price . "<br>";
-}
-// Конец дэбагов
-*/
-
-
-
-// Ввод категорий без защиты
-/*
-for ($i = 0, $cat_code = 1; $i < $product->Товар->count(); $i++, $cat_code++) {
-  foreach ($product->Товар[$i]->Разделы->Раздел as $value) {
-    try {
-      $exec = $pdo->exec("INSERT INTO a_category VALUES (NULL, $cat_code, '$value', DEFAULT)");
-    } catch (PDOException $e) {
-      echo "Ошибка загузки в базу данных" . $e->getMessage();
-    }
-  }
-}
-*/
-
-/*
-$query = $pdo->query("SELECT * FROM a_category WHERE category_name LIKE 'Бумага'");
-$category = $query->fetch(PDO::FETCH_ASSOC);
-
-debug($category);
-if ($category['category_name'] == 'Бумага') {
-	echo "Есть";
-} else {
-	echo "Нету";
-}
-*/
-
-/*
-$q = $pdo->query("SELECT * FROM catalogs WHERE id NOT IN (8,9)");
-while ($row = $q->fetch()) {
-  echo "$row[0] - $row[1]<br>";
-}
-*/
-
-/*
-try {
-  $query = $pdo->exec("UPDATE tbl SET lastdate = '2020-04-18' WHERE lastdate = '2020-04-17'");
-  echo "Изменена " . $query . " строка";
-} catch (PDOEXception $e) {
-  echo "Не удалось вставить строку " . $e->getMessage();
-}
-*/
