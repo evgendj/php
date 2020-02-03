@@ -1,67 +1,203 @@
 <!-- Скляр - 215  ***  В подлиннике - 704 (Не записал 689-693 - Сортировка записей)-->
-
 <?php
+/*
 function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
+*/
 
-// перед добавлением значений надо проверять наличие этих свойств и соответствие типов, например может элемент не иметь свойство код и такой элемент не надо добавлять
-//также надо сделать проверку на наличие элемента в БД, чтобы не добавлять дубликаты
 
-// Функция importXml($a)
-function importXml($a) {
-	require_once('connect_db.php');
-	$xml = file_get_contents($a);
-	$product = new SimpleXMLElement($xml);
-	try {
-		for ($i = 0, $parent_id = 0, $c = 1; $i < $product->Товар->count(); $i++) {
+// Задание 3
+namespace Test3;
 
-			// Загружаем код (ПРИ НАЛИЧИИ) и имя продукта, извлекаем id
-			$insert_product = $pdo->prepare("INSERT INTO a_product VALUES (NULL, ?, ?)");
-			if ($product->Товар[$i]->attributes()->{'Код'}) {
-				$insert_product->execute([$product->Товар[$i]->attributes()->{'Код'}, $product->Товар[$i]->attributes()->{'Название'}]);
-			} else {
-				$insert_product->execute([NULL, $product->Товар[$i]->attributes()->{'Название'}]);
-			}
-			$product_id = $pdo->lastInsertId();
-
-			// Загружаем цену с типом
-			$insert_price = $pdo->prepare("INSERT INTO a_price VALUES ($product_id, ?, ?)");
-			foreach ($product->Товар[$i]->Цена as $price) {
-				$insert_price->execute([$price['Тип'], $price]);
-			}
-
-			// Загружаем свойства (ПРИ НАЛИЧИИ)
-			$insert_properties = $pdo->prepare("INSERT INTO a_property VALUES ($product_id, ?, ?)");
-			foreach ($product->Товар[$i]->Свойства as $properties) {
-				foreach ($properties as $property => $value) {
-					if ($product->Товар[$i]->Свойства) {
-						$insert_properties->execute([$property, $value]);
-					}
-				}
-			}
-
-			// Загружаем разделы, вложенность разделов и связь разделов с товаром
-			$insert_category = $pdo->prepare("INSERT INTO a_category VALUES (NULL, ?, ?, ?)");
-			$product_in_category = $pdo->prepare("INSERT INTO a_product_category VALUES (?, ?)");
-			foreach ($product->Товар[$i]->Разделы->Раздел as $category_name) {
-				$query_category = $pdo->query("SELECT * FROM a_category WHERE name LIKE '$category_name'");
-				$category = $query_category->fetch(PDO::FETCH_ASSOC);
-				if ($category['name'] == $category_name) {
-					$parent_id = $category['category_id'];
-					$product_in_category->execute([$product_id, $category['category_id']]);
-				} else {
-					$insert_category->execute([$c, $category_name, $parent_id]);
-					$parent_id = $pdo->lastInsertId();
-					$product_in_category->execute([$product_id, $pdo->lastInsertId()]);
-					$c++;
-				}
-			}
-			$parent_id = 0;
-		}
-	} catch (PDOException $e) {
-		echo "Ошибка загрузки в базу данных" . $e->getMessage();
-	}
+class newBase
+{
+    static private $count = 0;
+    static private $arSetName = [];
+    /**
+     * @param string $name
+     */
+    function __construct(int $name = 0)
+    {
+        if (empty($name)) {
+            while (array_search(self::$count, self::$arSetName) != false) {
+                ++self::$count;
+            }
+            $name = self::$count;
+        }
+        $this->name = $name;
+        self::$arSetName[] = $this->name;
+    }
+    private $name;
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return '*' . $this->name  . '*';
+    }
+    protected $value;
+    /**
+     * @param mixed $value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+    /**
+     * @return string
+     */
+    public function getSize()
+    {
+        $size = strlen(serialize($this->value));
+        return strlen($size) + $size;
+    }
+    public function __sleep()
+    {
+        return ['value'];
+    }
+    /**
+     * @return string
+     */
+    public function getSave(): string
+    {
+        $value = serialize($value);
+        return $this->name . ':' . sizeof($value) . ':' . $value;
+    }
+    /**
+     * @return newBase
+     */
+    static public function load(string $value): newBase
+    {
+        $arValue = explode(':', $value);
+        return (new newBase($arValue[0]))
+            ->setValue(unserialize(substr($value, strlen($arValue[0]) + 1
+                + strlen($arValue[1]) + 1), $arValue[1]));
+    }
 }
-$a = 'product.xml';
-importXml($a);
+class newView extends newBase
+{
+    private $type = null;
+    private $size = 0;
+    private $property = null;
+    /**
+     * @param mixed $value
+     */
+    public function setValue($value)
+    {
+        parent::setValue($value);
+        $this->setType();
+        $this->setSize();
+    }
+    public function setProperty($value)
+    {
+        $this->property = $value;
+        return $this;
+    }
+    private function setType()
+    {
+        $this->type = gettype($this->value);
+    }
+    private function setSize()
+    {
+        if (is_subclass_of($this->value, "Test3\newView")) {
+            $this->size = parent::getSize() + 1 + strlen($this->property);
+        } elseif ($this->type == 'test') {
+            $this->size = parent::getSize();
+        } else {
+            $this->size = strlen($this->value);
+        }
+    }
+    /**
+     * @return string
+     */
+    public function __sleep()
+    {
+        return ['property'];
+    }
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        if (empty($this->name)) {
+            throw new Exception('The object doesn\'t have name');
+        }
+        return '"' . $this->name  . '": ';
+    }
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return ' type ' . $this->type  . ';';
+    }
+    /**
+     * @return string
+     */
+    public function getSize(): string
+    {
+        return ' size ' . $this->size . ';';
+    }
+    public function getInfo()
+    {
+        try {
+            echo $this->getName()
+                . $this->getType()
+                . $this->getSize()
+                . "\r\n";
+        } catch (Exception $exc) {
+            echo 'Error: ' . $exc->getMessage();
+        }
+    }
+    /**
+     * @return string
+     */
+    public function getSave(): string
+    {
+        if ($this->type == 'test') {
+            $this->value = $this->value->getSave();
+        }
+        return parent::getSave() . serialize($this->property);
+    }
+    /**
+     * @return newView
+     */
+    static public function load(string $value): newBase
+    {
+        $arValue = explode(':', $value);
+        return (new newBase($arValue[0]))
+            ->setValue(unserialize(substr($value, strlen($arValue[0]) + 1
+                + strlen($arValue[1]) + 1), $arValue[1]))
+            ->setProperty(unserialize(substr($value, strlen($arValue[0]) + 1
+                + strlen($arValue[1]) + 1 + $arValue[1])))
+            ;
+    }
+}
+function gettype($value): string
+{
+    if (is_object($value)) {
+        $type = get_class($value);
+        do {
+            if (strpos($type, "Test3\newBase") !== false) {
+                return 'test';
+            }
+        } while ($type = get_parent_class($type));
+    }
+    return gettype($value);
+}
+
+
+$obj = new newBase('12345');
+$obj->setValue('text');
+
+$obj2 = new \Test3\newView('O9876');
+$obj2->setValue($obj);
+$obj2->setProperty('field');
+$obj2->getInfo();
+
+$save = $obj2->getSave();
+
+$obj3 = newView::load($save);
+
+var_dump($obj2->getSave() == $obj3->getSave());
