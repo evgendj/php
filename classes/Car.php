@@ -20,7 +20,6 @@ class Car
     Марка: {$this->brand}<br>
     Цвет: {$this->color}<br>
     Кол-во колес: {$this->wheels}<br>
-    Год выпуска: {$this->year}<br>
     Скорость: {$this->speed}<br>";
   }
 
