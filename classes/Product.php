@@ -1,47 +1,66 @@
 <?php
 
-abstract class Product
-{
-  public $name;
-  protected $price;
+class Product {
 
-  const TEST = 10;
+	public $name;
+	public $price;
 
-  private $discount = 0;
+	public function __construct($name, $price) {
+		$this->name = $name;
+		$this->price = $price;
+	}
 
-  function __construct($name, $price)
-  {
-    $this->name = $name;
-    $this->price = $price;
-  }
+	public function getProduct() {
+		return "<hr><b>О товаре:</b><br>
+						Наименование: {$this->name}<br>
+						Цена: {$this->price}<br>";
+	}
 
-  function getName()
-  {
+  public function getName() {
     return $this->name;
   }
 
-  function getPrice()
-  {
-    return $this->price - ($this->discount / 100 * $this->price);
+  public function getPrice() {
+    return $this->price;
   }
 
-  function getProduct()
-  {
-    return "<hr><b>О товаре:</b><br>
-    Наименование: {$this->name}<br>
-    Цена со скидкой: {$this->getPrice()}<br>";
-  }
 
-  function getDiscount() {
-    return $this->discount;
-  }
 
-  function setDiscount($discount)
-  {
-    $this->discount = $discount;
-  }
-
-  abstract public function addProduct($name, $price);
 
 
 }
+
+
+
+
+
+// Код без наследования
+/*
+class Product {
+
+	public $name;
+	public $price;
+
+	public $cpu;
+	public $numPages;
+
+	public function __construct($name, $price, $cpu = null, $numPages = null) {
+		$this->name = $name;
+		$this->price = $price;
+		$this->cpu = $cpu;
+		$this->numPages = $numPages;
+	}
+
+	public function getProduct($type = 'notebook') {
+		$out = "<hr><b>О товаре:</b><br>
+						Наименование: {$this->name}<br>
+						Цена: {$this->price}<br>";
+		if ($type == 'notebook') {
+			$out .= "Процессор: {$this->cpu}<br>";
+		} else {
+			$out .= "Количество страниц: {$this->numPages}<br>";
+		}
+		return $out;
+	}
+}
+*/

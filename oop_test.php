@@ -5,44 +5,40 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
+error_reporting(-1);
+require_once 'classes/Product.php';
+require_once 'classes/NotebookProduct.php';
+require_once 'classes/BookProduct.php';
 
-class Product {
+$book = new BookProduct('Три мушкетера', 20, 1000);
+$notebook = new NotebookProduct('Dell', 1000, 'Intel');
 
-	public $name;
-	public $price;
+debug($book);
+debug($notebook);
 
-	public $cpu;
-	public $numPages;
-
-	public function __construct($name, $price, $cpu = null, $numPages = nuul) {
-		$this->name = $name;
-		$this->price = $price;
-		$this->cpu = $cpu;
-		$this->$numPages = $numPages;
-	}
-
-	public function getCpu() {
-		return $this->cpu;
-	}
-
-	public function getProduct($type = 'notebook') {
-		$out = "<hr><b>О товаре:</b><br>
-						Наименование: {$this->name}<br>
-						Цена: {$this->price}<br>";
-		if ($type == 'notebook') {
-			$out .= "Процессор: {$this->cpu}<br>";
-		} else {
-			$out .= "Количество страниц: {$this->numPages}<br>";
-		}
-		return $out;
-	}
+echo $book->getProduct();
+echo $notebook->getProduct();
 
 
 
-}
 
 
 
+
+// Код без наследования
+/*
+error_reporting(-1);
+require_once 'classes/Product.php';
+
+$book = new Product('Три мушкетера', 20, null, 1000);
+$notebook = new Product('Dell', 1000, 'Intel');
+
+debug($book);
+debug($notebook);
+
+echo $book->getProduct('book');
+echo $notebook->getProduct();
+*/
 
 
 
