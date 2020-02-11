@@ -21,6 +21,24 @@ class Product {
 		$this->$numPages = $numPages;
 	}
 
+	public function getCpu() {
+		return $this->cpu;
+	}
+
+	public function getProduct($type = 'notebook') {
+		$out = "<hr><b>О товаре:</b><br>
+						Наименование: {$this->name}<br>
+						Цена: {$this->price}<br>";
+		if ($type == 'notebook') {
+			$out .= "Процессор: {$this->cpu}<br>";
+		} else {
+			$out .= "Количество страниц: {$this->numPages}<br>";
+		}
+		return $out;
+	}
+
+
+
 }
 
 
