@@ -1,11 +1,16 @@
 <?php
 
+// Статика, константы, свойства, методы
+
 class Car
 {
   public $color;
   public $wheels = 4;
   public $speed = 180;
   public $brand;
+
+  const TEST_CAR = 'Прототип';
+  const TEST_CAR_SPEED = 300;
 
   public static $countCar = 0;
 
@@ -15,11 +20,11 @@ class Car
     $this->wheels = $wheels;
     $this->speed = $speed;
     $this->brand = $brand;
-    self::$countCar++;
+    self::$countCar++; // Счетчик объектов, при создании объекта плюсуется единичка
   }
 
   public static function getCount() {
-
+    return self::$countCar;
   }
 
   public function getCarInfo() {
@@ -29,6 +34,14 @@ class Car
     Кол-во колес: {$this->wheels}<br>
     Скорость: {$this->speed}<br>";
   }
+
+  public function getPrototypeInfo() {
+    return "<h3>Данные тестового авто:</h3>
+    Наименование: " . self::TEST_CAR . "<br>
+    Скорость: " . self::TEST_CAR_SPEED . "<br>";
+  }
+
+
 }
 
 

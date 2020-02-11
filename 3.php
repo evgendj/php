@@ -1,14 +1,18 @@
 <?php
-namespace Test3;
+namespace Test3; // Пространство имен
 
-class newBase
+function debug($data) {
+	echo "<pre>" . print_r($data, 1) . "</pre>";
+}
+
+class newBase // Класс со статикой
 {
-    static private $count = 0;
-    static private $arSetName = [];
+    static private $count = 0; // Статическое свойство используется только в конструкторе тут
+    static private $arSetName = []; // Статический массив используется только в конструкторе
     /**
      * @param string $name
      */
-    function __construct(int $name = 0)
+    function __construct(int $name = 0) // В конструктор передается значение (int)
     {
         if (empty($name)) {
             while (array_search(self::$count, self::$arSetName) != false) {
@@ -31,7 +35,7 @@ class newBase
     /**
      * @param mixed $value
      */
-    public function setValue($value)
+    public function setValue($value) // Метод создает переменную и принимает значение при обращении к методу
     {
         $this->value = $value;
     }
@@ -66,7 +70,7 @@ class newBase
                 + strlen($arValue[1]) + 1), $arValue[1]));
     }
 }
-class newView extends newBase
+class newView extends newBase // Новый метод наследует парамтры newBase
 {
     private $type = null;
     private $size = 0;
@@ -87,7 +91,8 @@ class newView extends newBase
     }
     private function setType()
     {
-        $this->type = gettype($this->value);
+      // $this->type = gettype($this->value);
+      echo $this->value;
     }
     private function setSize()
     {
@@ -179,16 +184,25 @@ function gettype($value): string
 }
 
 
-$obj = new newBase('12345');
-$obj->setValue('text');
+$obj = new newBase('12345'); // Создается новый объект класса newBase и передаются данные в конструктор (должно быть целочисл.)
+$obj->setValue('text'); // Обращение к методу с передачей данных в него
 
-$obj2 = new \Test3\newView('O9876');
+debug($obj);
+
+$obj2 = new \Test3\newView('9876'); // Создается новый объект класса newView и передаются данные (должно быть целочисл.)
+// Была ошибка $obj2 = new \Test3\newView('O9876'); - вместо нуля стоит буква О
+
+// ini_set('memory_limit', '10000M');
 $obj2->setValue($obj);
-$obj2->setProperty('field');
-$obj2->getInfo();
+// Эта строка выдала ошибку Allowed memory size of 1610612736 bytes exhausted (tried to allocate 262144 bytes) - над ней увеличил память и уменшил входяшую цифру, но не помогло
 
-$save = $obj2->getSave();
+//$obj2->setProperty('field');
+//$obj2->getInfo();
 
-$obj3 = newView::load($save);
+debug($obj2);
 
-var_dump($obj2->getSave() == $obj3->getSave());
+//$save = $obj2->getSave();
+
+//$obj3 = newView::load($save);
+
+//var_dump($obj2->getSave() == $obj3->getSave());
