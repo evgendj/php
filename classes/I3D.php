@@ -1,8 +1,8 @@
 <?php
 
-interface I3D
-{
-    const TEST2 = 'test interface';
+interface I3D {
 
-    public function test();
+  const TEST2 = 'test interface';
+
+  public function test();
 }

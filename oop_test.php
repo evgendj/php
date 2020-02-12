@@ -5,9 +5,10 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-
+// Абстрактные классы, интерфейсы
 error_reporting(-1);
 require_once 'classes/Product.php';
+require_once 'classes/I3D.php';
 require_once 'classes/BookProduct.php';
 
 $book = new BookProduct('Три мушкетера', 20, 1000);
@@ -15,8 +16,24 @@ $book = new BookProduct('Три мушкетера', 20, 1000);
 debug($book);
 
 echo $book->getProduct();
+//echo $book->test();
 
 // $product = new Product('Test', 1); // Product - абстрактный класс, сделали его асбтрактным, чтобы нельзя было вывести объект этого класса, так как он является шаблоном и его бессмысленно выводить.
+
+class A{};
+class B extends A{};
+class C{};
+
+$a = new A;
+$b = new B;
+$c = new C;
+
+var_dump($a instanceof A);
+var_dump($b instanceof B);
+var_dump($c instanceof A);
+
+
+
 
 // Наследование, модификаторы - пример с ценой для модификатора
 /*
