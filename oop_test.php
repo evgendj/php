@@ -5,7 +5,22 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
+
 error_reporting(-1);
+require_once 'classes/Product.php';
+require_once 'classes/BookProduct.php';
+
+$book = new BookProduct('Три мушкетера', 20, 1000);
+
+debug($book);
+
+echo $book->getProduct();
+
+// $product = new Product('Test', 1); // Product - абстрактный класс, сделали его асбтрактным, чтобы нельзя было вывести объект этого класса, так как он является шаблоном и его бессмысленно выводить.
+
+// Наследование, модификаторы - пример с ценой для модификатора
+/*
+error_reporting(-1); // Вывод ошибок
 require_once 'classes/Product.php';
 require_once 'classes/NotebookProduct.php';
 require_once 'classes/BookProduct.php';
@@ -14,16 +29,20 @@ $book = new BookProduct('Три мушкетера', 20, 1000);
 $notebook = new NotebookProduct('Dell', 1000, 'Intel');
 
 debug($book);
-debug($notebook);
+// debug($notebook); // Чтобы посмотреть бук, раскомментируй
+
+// $book->discount = 50; // Так же переменую можно переопределить из вне, если она публичная.
 
 echo $book->getProduct();
-echo $notebook->getProduct();
+echo $book->getDiscount(); // Посмотреть закрытую переменную вне класса можно при помощи гетера, если он делает это возможным
 
+// echo $book->price; // Закрываем доступ к цене в не класса, чтобы случайно не ту цену не вывели
+// echo $notebook->getProduct(); // Чтобы посмотреть бук, раскомментируй
 
-
-
-
-
+// var_dump($book->public); // Публичную переменную можно вывести вне класса
+// var_dump($book->protected); // Выводит ошибку при попытке обратится к защищенной переменной вне класса
+// var_dump($book->private); // К обращении вне класса к закрытой переменной выдаст ошибку, что нет такой переменной
+*/
 
 // Код без наследования
 /*

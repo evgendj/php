@@ -1,6 +1,6 @@
 <?php
 
-class NotebookProduct extends Product
+class NotebookProduct extends Product // Это класс для ноутбуков, он наследует все из продукт
 {
   public $cpu;
 
