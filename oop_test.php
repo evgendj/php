@@ -5,17 +5,68 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-// Абстрактные классы, интерфейсы
+// Автозагрузка, пространство имен
 error_reporting(-1);
-require_once 'classes/Product.php';
-require_once 'classes/I3D.php';
-require_once 'classes/BookProduct.php';
+
+function autoloder1($class) {
+	$file = __DIR__ . "/classes/{$class}.php";
+	if (file_exists($file)) {
+		require_once $file;
+	}
+}
+
+function autoloder2($class) {
+	$file = __DIR__ . "/classes/interfaces/{$class}.php"; // Это если создали внутри папку с интерфейсами
+	if (file_exists($file)) {
+		require_once $file;
+	}
+}
+
+spl_autoload_register('autoloder1');
+spl_autoload_register('autoloder2');
+
+function offerCase(IGadget $product) {
+	echo "<p>Предлагаем чехол для гаджета {$product->getName()}</p>";
+}
 
 $book = new BookProduct('Три мушкетера', 20, 1000);
+$notebook = new NotebookProduct('Dell', 1000, 'Intel');
 
+
+offerCase($notebook);
 debug($book);
 
 echo $book->getProduct();
+echo $notebook->getProduct();
+//echo $book->test();
+
+
+
+// Абстрактные классы, интерфейсы
+/*
+error_reporting(-1);
+require_once 'classes/Product.php';
+require_once 'classes/I3D.php';
+require_once 'classes/IGadget.php';
+require_once 'classes/BookProduct.php';
+require_once 'classes/NotebookProduct.php';
+
+
+function offerCase(IGadget $product) { // Благодаря интерфейсу есть контроль к какому объект относится, тут будет работать функция, если передается объект, относящийся к IGadget. По скольку к ноутбуку подключили интерфейс, то он сейчас принадлежит и к ноутбуку и к интерфейсу. А книга не принадлежит к этому интерфейсу. Значит при попытке вставить в этот метод объект книги, будет ошибка.
+	echo "<p>Предлагаем чехол для гаджета {$product->getName()}</p>";
+}
+
+$book = new BookProduct('Три мушкетера', 20, 1000);
+$notebook = new NotebookProduct('Dell', 1000, 'Intel');
+
+// var_dump($notebook instanceof IGadget);
+
+offerCase($notebook);
+// offerCase($book);
+debug($book);
+
+echo $book->getProduct();
+echo $notebook->getProduct();
 //echo $book->test();
 
 // $product = new Product('Test', 1); // Product - абстрактный класс, сделали его асбтрактным, чтобы нельзя было вывести объект этого класса, так как он является шаблоном и его бессмысленно выводить.
@@ -31,9 +82,7 @@ $c = new C;
 var_dump($a instanceof A);
 var_dump($b instanceof B);
 var_dump($c instanceof A);
-
-
-
+*/
 
 // Наследование, модификаторы - пример с ценой для модификатора
 /*
