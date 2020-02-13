@@ -5,25 +5,49 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-// Автозагрузка, пространство имен
+// Composer и автозагрузка. Трейты. Позднее статическое связывание.
+// Тут установили композер, добавились папки app (в нее скопировал два класса) и vendor (в ней создал папку проекта wfm и в скопировал шаблонный класс и интерфейсы)
+
 error_reporting(-1);
 
-function autoloder1($class) {
-	$file = __DIR__ . "/classes/{$class}.php";
+use wfm\interfaces\IGadget;
+use app\{BookProduct, NotebookProduct};
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+function offerCase(IGadget $product) {
+	echo "<p>Предлагаем чехол для гаджета {$product->getName()}</p>";
+}
+
+$book = new BookProduct('Три мушкетера', 20, 1000);
+$notebook = new NotebookProduct('Dell', 1000, 'Intel');
+
+offerCase($notebook);
+
+debug($book);
+debug($notebook);
+
+// $mail = new \PHPMailer\PHPMailer\PHPMailer();
+// debug($mail);
+
+
+
+// Автозагрузка, пространство имен
+/*
+error_reporting(-1);
+
+use classes\BookProduct;
+use classes\notebookProduct;
+use classes\interfaces\IGadget;
+
+function autoloder($class) {
+	$class = str_replace("\\", '/', $class);
+	$file = __DIR__ . "/{$class}.php";
 	if (file_exists($file)) {
 		require_once $file;
 	}
 }
-
-function autoloder2($class) {
-	$file = __DIR__ . "/classes/interfaces/{$class}.php"; // Это если создали внутри папку с интерфейсами
-	if (file_exists($file)) {
-		require_once $file;
-	}
-}
-
-spl_autoload_register('autoloder1');
-spl_autoload_register('autoloder2');
+spl_autoload_register('autoloder');
 
 function offerCase(IGadget $product) {
 	echo "<p>Предлагаем чехол для гаджета {$product->getName()}</p>";
@@ -39,7 +63,7 @@ debug($book);
 echo $book->getProduct();
 echo $notebook->getProduct();
 //echo $book->test();
-
+*/
 
 
 // Абстрактные классы, интерфейсы

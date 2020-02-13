@@ -4,6 +4,8 @@
 
 namespace classes;
 
+use classes\interfaces\IGadget;
+
 class NotebookProduct extends Product implements IGadget // Это класс для ноутбуков, он наследует все из продукт
 {
   public $cpu;
