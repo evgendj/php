@@ -5,7 +5,7 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-// Composer и автозагрузка. Трейты. Позднее статическое связывание.
+// Composer и автозагрузка. Трейты. Позднее статическое связывание. Магические методы
 // Тут установили композер, добавились папки app (в нее скопировал два класса) и vendor (в ней создал папку проекта wfm и в скопировал шаблонный класс и интерфейсы)
 
 error_reporting(-1);
@@ -22,14 +22,26 @@ function offerCase(IGadget $product) {
 $book = new BookProduct('Три мушкетера', 20, 1000);
 $notebook = new NotebookProduct('Dell', 1000, 'Intel');
 
-offerCase($notebook);
+// offerCase($notebook);
 
+$book->test = 'Hello';
 debug($book);
-debug($notebook);
+// debug($notebook);
 
 // $mail = new \PHPMailer\PHPMailer\PHPMailer();
 // debug($mail);
 
+$a = new \app\A();
+$b = new \app\B();
+$a->getTest();
+$b->getTest();
+$b->getTest2();
+echo "<br>";
+$book->doAction1()->doAction2();
+
+echo "<hr>";
+
+echo $book;
 
 
 // Автозагрузка, пространство имен
