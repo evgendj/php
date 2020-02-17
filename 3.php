@@ -21,33 +21,31 @@ class newBase
             }
             $name = self::$count;
         }
-        $this->name = $name; // Создается новое свойство
+        $this->name = $name; // Создается новое свойство из значения при создании объекта
         self::$arSetName[] = $this->name; // Значение передается в массив в статику
-        // $a = self::$arSetName;
-        // debug($a);
     }
     private $name; // Устанавливается закрытый модификатор
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName(): string // Метот добавляет звездочки для $name с двух сторон
     {
         return '*' . $this->name  . '*';
     }
-    protected $value;
+    protected $value; // Создается защищенное свойство
     /**
      * @param mixed $value
      */
-    public function setValue($value)
+    public function setValue($value) // Передача значения свойству при обрещении к методу
     {
         $this->value = $value;
     }
     /**
      * @return string
      */
-    public function getSize()
+    public function getSize() //
     {
-        $size = strlen(serialize($this->value));
+        $size = strlen(serialize($this->value)); // Определение длины строки
         return strlen($size) + $size;
     }
     public function __sleep()
@@ -190,8 +188,8 @@ $obj = new newBase('12345');
 
 //
 debug($obj);
-//
-// echo $obj->name;
+echo $obj->getName();
+
 
 // $obj->setValue('text');
 //

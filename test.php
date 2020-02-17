@@ -5,18 +5,29 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-$a = 1;
-$count = 10;
-$arSetName = [10, 20];
+class _SW
+{
+	public function __construct()
+	{
+		$this->value = 10;
 
-debug($arSetName);
+	}
 
-if (empty($a)) { // Если $name не задано или = 0, то выполняется условие
-		while (array_search($count, $arSetName) != false) {
-				++$count; // В статике в массиве ищется заданное в объекте значение.
-		}
-		$name = $count;
+	public function getSize()
+	{
+			$size = strlen(serialize($this->value));
+			return strlen($size) + $size;
+	}
+	public function __sleep()
+	{
+			return ['value'];			
+	}
+
 }
-$arSetName[] = $name; // Значение передается в массив в статику
 
-debug($arSetName);
+$_newSW = new _SW();
+
+debug($_newSW);
+
+serialize($_newSW);
+debug($_newSW);
