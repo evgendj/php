@@ -188,14 +188,15 @@ $obj = new newBase('12345');
 
 //
 debug($obj);
-echo $obj->getName();
 
+$obj->setValue('text');
 
-// $obj->setValue('text');
+$obj2 = new \Test3\newView('9876'); // Объект необходимо создавать с целочисленным значением, было с буквой О в начале
+
 //
-// $obj2 = new \Test3\newView('O9876');
+debug($obj2);
 // $obj2->setValue($obj);
-// $obj2->setProperty('field');
+$obj2->setProperty('field');
 // $obj2->getInfo();
 //
 // $save = $obj2->getSave();
