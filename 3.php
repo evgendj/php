@@ -1,29 +1,32 @@
 <?php
-namespace Test3; // Пространство имен
+namespace Test3;
 
+// Дебаг
 function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-class newBase // Класс со статикой
+class newBase
 {
-    static private $count = 0; // Статическое свойство используется только в конструкторе тут
-    static private $arSetName = []; // Статический массив используется только в конструкторе
+    static private $count = 0; // Статическое свойство, для расчета внутри класса. Тут используется как счетчик.
+    static private $arSetName = []; // Тоже статическое свойство - пустой массив в начале.
     /**
      * @param string $name
      */
-    function __construct(int $name = 0) // В конструктор передается значение (int)
+    function __construct(int $name = 0) // Конструктор принимает целочисленное значение при создании объекта.
     {
-        if (empty($name)) {
+        if (empty($name)) { // Если $name не задано или = 0, то выполняется условие
             while (array_search(self::$count, self::$arSetName) != false) {
-                ++self::$count;
+                ++self::$count; // В статике в массиве ищется заданное в объекте значение.
             }
             $name = self::$count;
         }
-        $this->name = $name;
-        self::$arSetName[] = $this->name;
+        $this->name = $name; // Создается новое свойство
+        self::$arSetName[] = $this->name; // Значение передается в массив в статику
+        // $a = self::$arSetName;
+        // debug($a);
     }
-    private $name;
+    private $name; // Устанавливается закрытый модификатор
     /**
      * @return string
      */
@@ -35,7 +38,7 @@ class newBase // Класс со статикой
     /**
      * @param mixed $value
      */
-    public function setValue($value) // Метод создает переменную и принимает значение при обращении к методу
+    public function setValue($value)
     {
         $this->value = $value;
     }
@@ -70,7 +73,7 @@ class newBase // Класс со статикой
                 + strlen($arValue[1]) + 1), $arValue[1]));
     }
 }
-class newView extends newBase // Новый метод наследует парамтры newBase
+class newView extends newBase
 {
     private $type = null;
     private $size = 0;
@@ -91,8 +94,7 @@ class newView extends newBase // Новый метод наследует пар
     }
     private function setType()
     {
-      // $this->type = gettype($this->value);
-      echo $this->value;
+        $this->type = gettype($this->value);
     }
     private function setSize()
     {
@@ -184,25 +186,22 @@ function gettype($value): string
 }
 
 
-$obj = new newBase('12345'); // Создается новый объект класса newBase и передаются данные в конструктор (должно быть целочисл.)
-$obj->setValue('text'); // Обращение к методу с передачей данных в него
+$obj = new newBase('12345');
 
+//
 debug($obj);
+//
+// echo $obj->name;
 
-$obj2 = new \Test3\newView('9876'); // Создается новый объект класса newView и передаются данные (должно быть целочисл.)
-// Была ошибка $obj2 = new \Test3\newView('O9876'); - вместо нуля стоит буква О
+// $obj->setValue('text');
+//
+// $obj2 = new \Test3\newView('O9876');
+// $obj2->setValue($obj);
+// $obj2->setProperty('field');
+// $obj2->getInfo();
+//
+// $save = $obj2->getSave();
+//
+// $obj3 = newView::load($save);
 
-// ini_set('memory_limit', '10000M');
-$obj2->setValue($obj);
-// Эта строка выдала ошибку Allowed memory size of 1610612736 bytes exhausted (tried to allocate 262144 bytes) - над ней увеличил память и уменшил входяшую цифру, но не помогло
-
-//$obj2->setProperty('field');
-//$obj2->getInfo();
-
-debug($obj2);
-
-//$save = $obj2->getSave();
-
-//$obj3 = newView::load($save);
-
-//var_dump($obj2->getSave() == $obj3->getSave());
+// var_dump($obj2->getSave() == $obj3->getSave());

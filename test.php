@@ -5,13 +5,18 @@ function debug($data) {
 	echo "<pre>" . print_r($data, 1) . "</pre>";
 }
 
-require_once('classes\Car.php');
-$car1 = new Car('black', 4, 180,'volvo');
-$car2 = new Car('white', 4, 200, 'BMW');
-//debug($car1);
+$a = 1;
+$count = 10;
+$arSetName = [10, 20];
 
-//debug($car1);
-//debug($car2);
+debug($arSetName);
 
-echo $car1->getCarInfo();
-echo $car2->getCarInfo();
+if (empty($a)) { // Если $name не задано или = 0, то выполняется условие
+		while (array_search($count, $arSetName) != false) {
+				++$count; // В статике в массиве ищется заданное в объекте значение.
+		}
+		$name = $count;
+}
+$arSetName[] = $name; // Значение передается в массив в статику
+
+debug($arSetName);
