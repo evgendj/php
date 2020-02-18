@@ -26,7 +26,8 @@ class newBase
         $this->name = $name; // Создается новое свойство из значения при создании объекта
         self::$arSetName[] = $this->name; // Значение передается в массив в статику
     }
-    private $name; // Устанавливается закрытый модификатор
+    protected $name; // Устанавливается (устанавливался точнее) закрытый модификатор
+									// !!! Ошибка 4 - у $name стоял private, не было доступа в дочернем классе
     /**
      * @return string
      */
@@ -81,9 +82,6 @@ class newView extends newBase
     /**
      * @param mixed $value
      */
-		 public function __construct($name, $price, $cpu) {////////////
- 	    parent::__construct($name, $price);
- 	  }
     public function setValue($value)
     {
         parent::setValue($value);
@@ -122,11 +120,11 @@ class newView extends newBase
 
     public function getName(): string
     {
-        // if (empty($this->name)) {
-        //     throw new \Exception('The object doesn\'t have name'); // !!! Ошибка 3 - не правильное создание объекта для исключений
-				// 																													// !!! поставил обратный слэш перед классом Exception
-        // }
-				debug($this->name);
+        if (empty($this->name)) {
+            throw new \Exception('The object doesn\'t have name'); // !!! Ошибка 3 - не правильное создание объекта для исключений
+																																	// !!! поставил обратный слэш перед классом Exception
+        }
+
         return '"' . $this->name  . '": ';
     }
     /**
@@ -143,7 +141,7 @@ class newView extends newBase
     {
         return ' size ' . $this->size . ';';
     }
-    public function getInfo()
+    public function getInfo() // Вывод на экран
     {
         try {
             echo $this->getName()
@@ -190,26 +188,23 @@ function gettype($value): string // Переопределение функци�
         } while ($type = get_parent_class($type));
     }
     return \gettype($value); // Если $value не объект (и условие if = false), идет зацикливание зачем-то, пробую изменить путь
-														// Добавил обратный слэш перед gettype($value), по идее не должно зацикливаться
+														// Добавил обратный слэш перед gettype($value), видимо нужно использовать штатную функцию gettype
 }
 
 
 $obj = new newBase('12345');
 $obj->setValue('text');
 
-$obj2 = new \Test3\newView('O9876'); // !!! Ошибка 1 - либо убираем int в конструкторе, либо передаем целочисленное в конструктор
+$obj2 = new newView('O9876'); // !!! Ошибка 1 - либо убираем int в конструкторе, либо передаем целочисленное в конструктор
 $obj2->setValue($obj);
 $obj2->setProperty('field');
+$obj2->getInfo();
+$save = $obj2->getSave();
 //
 debug($obj);
 debug($obj2);
-$obj2->getName();
-
 //
-$obj2->getInfo();
 exit;
-$save = $obj2->getSave();
-
 $obj3 = newView::load($save);
 
 var_dump($obj2->getSave() == $obj3->getSave());

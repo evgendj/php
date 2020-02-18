@@ -7,34 +7,29 @@ function debug($data) {
 
 class newBase
 {
-  public $color;
-  public $wheels = 4;
-  public $speed = 180;
-  public $brand;
+  function __construct($name = 0)
+	{
+		$this->name = $name;
+	}
+	protected $name;
 }
 
-
-$value = new newBase;
-
-function gettype($value): string
+class newView extends newBase
 {
-    if (is_object($value)) {
-        $type = get_class($value);
-        echo $type , "<br>";
-        do {
-            if (strpos($type, "Test3\newBase") !== false) { // !!! Ошибка 2 нет экрана на обрытный слэш
-            																								// !!! в кавычках было "Test3\newBase", поставил экран
-                return 'test';
-            }
-        } while ($type = get_parent_class($type));
-    }
-    return \gettype($value); // Если $value не объект (и условие if = false), идет зацикливание зачем-то, пробую изменить путь
-
+	public function getName()
+	{
+		return $this->name;
+	}
 }
 
-echo gettype($value);
+$obj = new newBase(123);
+$obj2 = new newView(456);
 
-debug($value);
+echo $obj2->getName();
+
+debug($obj);
+debug($obj2);
+
 
 
 /*
