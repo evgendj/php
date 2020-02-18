@@ -116,13 +116,14 @@ class newView extends newBase
     /**
      * @return string
      */
+
     public function getName(): string
     {
-
-        if (empty($this->name)) {
-            throw new \Exception('The object doesn\'t have name'); // !!! Ошибка 3 - не правильное создание объекта для исключений
-																																	// !!! поставил обратный слэш перед классом Exception
-        }
+        // if (empty($this->name)) {
+        //     throw new \Exception('The object doesn\'t have name'); // !!! Ошибка 3 - не правильное создание объекта для исключений
+				// 																													// !!! поставил обратный слэш перед классом Exception
+        // }
+				debug($this->name);
         return '"' . $this->name  . '": ';
     }
     /**
@@ -174,18 +175,19 @@ class newView extends newBase
             ;
     }
 }
-function gettype($value): string
+function gettype($value): string // Переопределение функции gettype()
 {
-    if (is_object($value)) {
-        $type = get_class($value);
-        do {
+    if (is_object($value)) { // Если объект
+        $type = get_class($value); // Передаем
+        do {																									// В условии проверяется соответствие классу newBase
             if (strpos($type, "Test3\\newBase") !== false) { // !!! Ошибка 2 нет экрана на обрытный слэш
-            																								// !!! в кавычках было "Test3\newBase", поставил экран
-                return 'test';
+            																								// !!! в кавычках было "Test3\newBase", поставил экран, можно в одинарные без э
+                return 'test';	// Если условие проходит возвращает строку test
             }
         } while ($type = get_parent_class($type));
     }
-    return gettype($value);
+    return \gettype($value); // Если $value не объект (и условие if = false), идет зацикливание зачем-то, пробую изменить путь
+														// Добавил обратный слэш перед gettype($value), по идее не должно зацикливаться
 }
 
 
@@ -195,8 +197,14 @@ $obj->setValue('text');
 $obj2 = new \Test3\newView('O9876'); // !!! Ошибка 1 - либо убираем int в конструкторе, либо передаем целочисленное в конструктор
 $obj2->setValue($obj);
 $obj2->setProperty('field');
-$obj2->getInfo();
+//
+debug($obj);
+debug($obj2);
+$obj2->getName();
 
+//
+$obj2->getInfo();
+exit;
 $save = $obj2->getSave();
 
 $obj3 = newView::load($save);
