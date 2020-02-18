@@ -119,13 +119,11 @@ class newView extends newBase
     public function getName(): string
     {
 
-			echo parent::$name;
-			exit;
-        // if (empty($this->name)) {
-        //     throw new \Exception('The object doesn\'t have name'); // !!! Ошибка 3 - не правильное создание объекта для исключений
-				// 																													// !!! поставил обратный слэш перед классом Exception
-        // }
-        // return '"' . $this->name  . '": ';
+        if (empty($this->name)) {
+            throw new \Exception('The object doesn\'t have name'); // !!! Ошибка 3 - не правильное создание объекта для исключений
+																																	// !!! поставил обратный слэш перед классом Exception
+        }
+        return '"' . $this->name  . '": ';
     }
     /**
      * @return string
