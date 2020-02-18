@@ -13,7 +13,9 @@ class newBase
     /**
      * @param string $name
      */
-    function __construct(int $name = 0) // Конструктор принимает целочисленное значение при создании объекта.
+    function __construct($name = 0) // Конструктор принимает целочисленное значение при создании объекта.
+																				// !!! Ошибка 1 - либо убираем int в конструкторе, либо передаем целочисленное
+																				// !!! Пробуем первый вариант в скобках было (int $name = 0) - убрал int
     {
         if (empty($name)) { // Если $name не задано или = 0, то выполняется условие
             while (array_search(self::$count, self::$arSetName) != false) {
@@ -43,9 +45,9 @@ class newBase
     /**
      * @return string
      */
-    public function getSize() //
+    public function getSize()
     {
-        $size = strlen(serialize($this->value)); // Определение длины строки
+        $size = strlen(serialize($this->value));
         return strlen($size) + $size;
     }
     public function __sleep()
@@ -116,10 +118,14 @@ class newView extends newBase
      */
     public function getName(): string
     {
-        if (empty($this->name)) {
-            throw new Exception('The object doesn\'t have name');
-        }
-        return '"' . $this->name  . '": ';
+
+			echo parent::$name;
+			exit;
+        // if (empty($this->name)) {
+        //     throw new \Exception('The object doesn\'t have name'); // !!! Ошибка 3 - не правильное создание объекта для исключений
+				// 																													// !!! поставил обратный слэш перед классом Exception
+        // }
+        // return '"' . $this->name  . '": ';
     }
     /**
      * @return string
@@ -170,13 +176,13 @@ class newView extends newBase
             ;
     }
 }
-
 function gettype($value): string
 {
-    if (is_object($value)) { // Если значение объект
-        $type = get_class($value); // Возвращает имя класса к которому принадлежит объект
+    if (is_object($value)) {
+        $type = get_class($value);
         do {
-            if (strpos($type, "Test3\newBase") !== false) { // Нужно либо слэш заэкранировать, либо в одинарные кавычки засунуть
+            if (strpos($type, "Test3\\newBase") !== false) { // !!! Ошибка 2 нет экрана на обрытный слэш
+            																								// !!! в кавычках было "Test3\newBase", поставил экран
                 return 'test';
             }
         } while ($type = get_parent_class($type));
@@ -184,22 +190,17 @@ function gettype($value): string
     return gettype($value);
 }
 
-echo $value;
 
 $obj = new newBase('12345');
 $obj->setValue('text');
 
-$obj2 = new \Test3\newView('9876'); // Объект необходимо создавать с целочисленным значением, было с буквой О в начале
-
+$obj2 = new \Test3\newView('O9876'); // !!! Ошибка 1 - либо убираем int в конструкторе, либо передаем целочисленное в конструктор
 $obj2->setValue($obj);
-// $obj2->setProperty('field');
-// $obj2->getInfo();
-//
-// $save = $obj2->getSave();
-//
-// $obj3 = newView::load($save);
-// var_dump($obj2->getSave() == $obj3->getSave());
+$obj2->setProperty('field');
+$obj2->getInfo();
 
-//
-debug($obj);
-debug($obj2);
+$save = $obj2->getSave();
+
+$obj3 = newView::load($save);
+
+var_dump($obj2->getSave() == $obj3->getSave());
