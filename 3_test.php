@@ -81,6 +81,9 @@ class newView extends newBase
     /**
      * @param mixed $value
      */
+		 public function __construct($name, $price, $cpu) {////////////
+ 	    parent::__construct($name, $price);
+ 	  }
     public function setValue($value)
     {
         parent::setValue($value);

@@ -28,7 +28,8 @@ function gettype($value): string
             }
         } while ($type = get_parent_class($type));
     }
-    return \gettype($value); // Если $value не объект (и условие if = false), идет зацикливание зачем-то
+    return \gettype($value); // Если $value не объект (и условие if = false), идет зацикливание зачем-то, пробую изменить путь
+
 }
 
 echo gettype($value);
