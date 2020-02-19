@@ -13,7 +13,7 @@ class newBase
     /**
      * @param string $name
      */
-    function __construct($name = 0) // Конструктор принимает целочисленное значение при создании объекта.
+    function __construct($name = 0) // Конструктор принимает !!целочисленное значение при создании объекта.
 																				// !!! Ошибка 1 - либо убираем int в конструкторе, либо передаем целочисленное
 																				// !!! Пробуем первый вариант в скобках было (int $name = 0) - убрал int
     {
@@ -26,7 +26,7 @@ class newBase
         $this->name = $name; // Создается новое свойство из значения при создании объекта
         self::$arSetName[] = $this->name; // Значение передается в массив в статику
     }
-    protected $name; // Устанавливается (устанавливался точнее) закрытый модификатор
+    protected $name; // Устанавливается (устанавливался) закрытый модификатор
 									// !!! Ошибка 4 - у $name стоял private, не было доступа в дочернем классе
     /**
      * @return string
@@ -48,10 +48,10 @@ class newBase
      */
     public function getSize()
     {
-        $size = strlen(serialize($this->value));
-        return strlen($size) + $size;
+        $size = strlen(serialize($this->value)); // Сериализация объекта value (в данном случае объекта) и определение длины строки
+        return strlen($size) + $size; // Возвращает результат мат. действий
     }
-    public function __sleep()
+    public function __sleep() // Но перед сериализацией выполняется метод
     {
         return ['value'];
     }
@@ -74,7 +74,7 @@ class newBase
                 + strlen($arValue[1]) + 1), $arValue[1]));
     }
 }
-class newView extends newBase
+class newView extends newBase // Класс наследует методы и свойства класса newBase
 {
     private $type = null;
     private $size = 0;
@@ -84,25 +84,25 @@ class newView extends newBase
      */
     public function setValue($value)
     {
-        parent::setValue($value);
-        $this->setType();
+        parent::setValue($value); // Наследуется установка значения для $value
+        $this->setType();					// И выполняются еще 2 метода
         $this->setSize();
     }
-    public function setProperty($value)
+    public function setProperty($value) // Передача значения в свойство $property при обращении к методу
     {
         $this->property = $value;
         return $this;
     }
-    private function setType()
+    private function setType() // Определение типа по переопределенной функции и запись в $type
     {
         $this->type = gettype($this->value);
     }
     private function setSize()
     {
-        if (is_subclass_of($this->value, "Test3\newView")) {
+        if (is_subclass_of($this->value, 'Test3\newView')) { // Если объект указанного класса, !!кавычки тоже поменял на одинарные
             $this->size = parent::getSize() + 1 + strlen($this->property);
-        } elseif ($this->type == 'test') {
-            $this->size = parent::getSize();
+        } elseif ($this->type == 'test') { // Если тип test, то обращается к родительскому методу
+            $this->size = parent::getSize(); // Соответственно метод работает со свойством класса newBase
         } else {
             $this->size = strlen($this->value);
         }
@@ -157,8 +157,8 @@ class newView extends newBase
      */
     public function getSave(): string
     {
-        if ($this->type == 'test') {
-            $this->value = $this->value->getSave();
+        if ($this->type == 'test') { // Если тип test
+            $this->value = $this->value->getSave(); //
         }
         return parent::getSave() . serialize($this->property);
     }
@@ -179,16 +179,16 @@ class newView extends newBase
 function gettype($value): string // Переопределение функции gettype()
 {
     if (is_object($value)) { // Если объект
-        $type = get_class($value); // Передаем
+        $type = get_class($value);
         do {																									// В условии проверяется соответствие классу newBase
-            if (strpos($type, "Test3\\newBase") !== false) { // !!! Ошибка 2 нет экрана на обрытный слэш
-            																								// !!! в кавычках было "Test3\newBase", поставил экран, можно в одинарные без э
+            if (strpos($type, 'Test3\newBase') !== false) { // !!! Ошибка 2 обратный слэш может навредить, можно экранировать
+            																								// !!! в кавычках было "Test3\newBase", поставил одинарные
                 return 'test';	// Если условие проходит возвращает строку test
             }
         } while ($type = get_parent_class($type));
     }
-    return \gettype($value); // Если $value не объект (и условие if = false), идет зацикливание зачем-то, пробую изменить путь
-														// Добавил обратный слэш перед gettype($value), видимо нужно использовать штатную функцию gettype
+    return \gettype($value); // Было зацикливание
+														// !!! Добавил обратный слэш перед gettype($value)
 }
 
 
