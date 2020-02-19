@@ -27,7 +27,7 @@ $obj2 = new newView(456);
 
 echo $obj2->getName();
 
-echo sizeof($obj2);
+echo sizeof(get_object_vars($obj2));
 
 debug($obj);
 debug($obj2);
