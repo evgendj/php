@@ -1,51 +1,46 @@
 <?php
 namespace Test3;
 
-// Дебаг
-function debug($data) {
-	echo "<pre>" . print_r($data, 1) . "</pre>";
-}
-
 class newBase
 {
-    static private $count = 0; // Статическое свойство, для расчета внутри класса. Тут используется как счетчик.
-    static private $arSetName = []; // Тоже статическое свойство - пустой массив в начале.
+    static private $count = 0;
+    static private $arSetName = [];
     /**
      * @param string $name
      */
-    function __construct(int $name = 0) // Конструктор принимает целочисленное значение при создании объекта.
+    function __construct(int $name = 0)
     {
-        if (empty($name)) { // Если $name не задано или = 0, то выполняется условие
+        if (empty($name)) {
             while (array_search(self::$count, self::$arSetName) != false) {
-                ++self::$count; // В статике в массиве ищется заданное в объекте значение.
+                ++self::$count;
             }
             $name = self::$count;
         }
-        $this->name = $name; // Создается новое свойство из значения при создании объекта
-        self::$arSetName[] = $this->name; // Значение передается в массив в статику
+        $this->name = $name;
+        self::$arSetName[] = $this->name;
     }
-    private $name; // Устанавливается закрытый модификатор
+    private $name;
     /**
      * @return string
      */
-    public function getName(): string // Метот добавляет звездочки для $name с двух сторон
+    public function getName(): string
     {
         return '*' . $this->name  . '*';
     }
-    protected $value; // Создается защищенное свойство
+    protected $value;
     /**
      * @param mixed $value
      */
-    public function setValue($value) // Передача значения свойству при обрещении к методу
+    public function setValue($value)
     {
         $this->value = $value;
     }
     /**
      * @return string
      */
-    public function getSize() //
+    public function getSize()
     {
-        $size = strlen(serialize($this->value)); // Определение длины строки
+        $size = strlen(serialize($this->value));
         return strlen($size) + $size;
     }
     public function __sleep()
@@ -170,13 +165,12 @@ class newView extends newBase
             ;
     }
 }
-
 function gettype($value): string
 {
-    if (is_object($value)) { // Если значение объект
-        $type = get_class($value); // Возвращает имя класса к которому принадлежит объект
+    if (is_object($value)) {
+        $type = get_class($value);
         do {
-            if (strpos($type, "Test3\newBase") !== false) { // Нужно либо слэш заэкранировать, либо в одинарные кавычки засунуть
+            if (strpos($type, "Test3\newBase") !== false) {
                 return 'test';
             }
         } while ($type = get_parent_class($type));
@@ -184,22 +178,18 @@ function gettype($value): string
     return gettype($value);
 }
 
-echo $value;
 
 $obj = new newBase('12345');
 $obj->setValue('text');
 
-$obj2 = new \Test3\newView('9876'); // Объект необходимо создавать с целочисленным значением, было с буквой О в начале
-
+$obj2 = new \Test3\newView('O9876');
 $obj2->setValue($obj);
-// $obj2->setProperty('field');
-// $obj2->getInfo();
-//
-// $save = $obj2->getSave();
-//
-// $obj3 = newView::load($save);
-// var_dump($obj2->getSave() == $obj3->getSave());
+$obj2->setProperty('field');
+$obj2->getInfo();
 
-//
-debug($obj);
-debug($obj2);
+$save = $obj2->getSave();
+
+$obj3 = newView::load($save);
+
+var_dump($obj2->getSave() == $obj3->getSave());
+
