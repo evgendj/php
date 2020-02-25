@@ -14,7 +14,11 @@ class newView extends newBase
         $this->setSize();
     }
 
-
+    public function setProperty($value)
+        {
+            $this->property = $value;
+            return $this;
+        }
 
     private function setType()
     {
@@ -29,6 +33,40 @@ class newView extends newBase
             $this->size = parent::getSize();
         } else {
             $this->size = strlen($this->value);
+        }
+    }
+
+    public function __sleep()
+    {
+        return ['property'];
+    }
+
+    public function getName(): string
+    {
+        if (empty($this->name)) {
+            throw new \Exception('The object doesn\'t have name'); // Поставил обратный слэш перед исключением
+        }
+        return '"' . $this->name  . '": ';
+    }
+
+    public function getType(): string
+    {
+        return ' type ' . $this->type  . ';';
+    }
+
+    public function getSize(): string
+    {
+        return ' size ' . $this->size . ';';
+    }
+    public function getInfo()
+    {
+        try {
+            echo $this->getName()
+                . $this->getType()
+                . $this->getSize()
+                . "\r\n";
+        } catch (Exception $exc) {
+            echo 'Error: ' . $exc->getMessage();
         }
     }
 
