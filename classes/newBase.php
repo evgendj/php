@@ -8,7 +8,7 @@ class newBase
     /**
      * @param string $name
      */
-    function __construct(int $name = 0)
+    function __construct($name = 0)
     {
         if (empty($name)) {
             while (array_search(self::$count, self::$arSetName) != false) {

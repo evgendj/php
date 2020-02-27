@@ -10,7 +10,7 @@ function debug($data) {
 }
 //
 
-// Данный классы выполняет функцию сохранения и восстановления объектов с их свойствами.
+// Данный класс выполняет функцию сохранения и восстановления объектов с их свойствами.
 // Вместо стандартной сериализации данных используется свой метод (сохранение в более короткую строку вида
 // Имя:ДлиназначенияЗначение и Имя:ДлиназначенияЗначениеСериализованноесвойство и соответственно чтение производится из этих же форматов)
 
@@ -28,20 +28,20 @@ function gettype($value): string
     if (is_object($value)) {
         $type = get_class($value);
         do {
-            if (strpos($type, "Test3\newBase") !== false) {
+            if (strpos($type, 'Test3\newBase') !== false) {
                 return 'test';
             }
         } while ($type = get_parent_class($type));
     }
-    return gettype($value);
+    return \gettype($value);
 }
 
 
 $obj = new newBase('12345');
 $obj->setValue('text');
 //
-//$obj2 = new \Test3\newView('O9876');
-//$obj2->setValue($obj);
+$obj2 = new \Test3\newView('O9876');
+$obj2->setValue($obj);
 //$obj2->setProperty('field');
 //$obj2->getInfo();
 //
@@ -53,5 +53,5 @@ $obj->setValue('text');
 
 //
 debug($obj);
-//debug($obj2);
+debug($obj2);
 echo serialize($obj);
