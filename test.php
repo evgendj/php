@@ -21,7 +21,6 @@ class Product
 $item = new Product();
 $item->product_name = "Пылесос";
 $item->setAvailable();
-
 $itemString = serialize($item);
 
 //.. тут могут осуществляться любые действия на  $item..//
