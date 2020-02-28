@@ -8,7 +8,8 @@ class newBase
     /**
      * @param string $name
      */
-    function __construct($name = 0)
+    //- в конструкторе тип был указан правильно, но есть ошибка в проверке на существование элемента (в случае пустого параметра);
+    function __construct(int $name = 0)
     {
         if (empty($name)) {
             while (array_search(self::$count, self::$arSetName) != false) {
@@ -19,7 +20,8 @@ class newBase
         $this->name = $name;
         self::$arSetName[] = $this->name;
     }
-    private $name;
+    protected $name;
+    // protected $name;
     /**
      * @return string
      */
