@@ -1,14 +1,18 @@
 <?php
 namespace Test3;
 
-class newView extends newBase
+class newView extends newBase // Класс наследует методы и свойства класса newBase
 {
     private $type = null;
     private $size = 0;
     private $property = null;
-    /**
-     * @param mixed $value
-     */
+}
+
+
+/*
+
+{
+
     public function setValue($value)
     {
         parent::setValue($value);
@@ -35,16 +39,12 @@ class newView extends newBase
             $this->size = strlen($this->value);
         }
     }
-    /**
-     * @return string
-     */
+
     public function __sleep()
     {
         return ['property'];
     }
-    /**
-     * @return string
-     */
+
     public function getName(): string
     {
         if (empty($this->name)) {
@@ -53,16 +53,12 @@ class newView extends newBase
         }
         return '"' . $this->name  . '": ';
     }
-    /**
-     * @return string
-     */
+
     public function getType(): string
     {
         return ' type ' . $this->type  . ';';
     }
-    /**
-     * @return string
-     */
+
     public function getSize(): string
     {
         return ' size ' . $this->size . ';';
@@ -78,9 +74,7 @@ class newView extends newBase
             echo 'Error: ' . $exc->getMessage();
         }
     }
-    /**
-     * @return string
-     */
+
     public function getSave(): string
     {
         if ($this->type == 'test') {
@@ -88,9 +82,7 @@ class newView extends newBase
         }
         return parent::getSave() . serialize($this->property);
     }
-    /**
-     * @return newView
-     */
+
     static public function load(string $value): newBase
     {
         $arValue = explode(':', $value);
@@ -102,3 +94,5 @@ class newView extends newBase
             ;
     }
 }
+
+*/

@@ -3,43 +3,52 @@ namespace Test3;
 
 class newBase
 {
-    static private $count = 0;
-    static private $arSetName = [];
+    static private $count = 0; // Статическое свойство, для расчета внутри класса. Тут используется как счетчик.
+    static private $arSetName = []; // Тоже статическое свойство - пустой массив в начале.
     /**
-     * @param string $name
+     * @param string $name // Говорит, что в конструкторе входящий параметр name будет строковым, вот почему в кавычках newBase('12345')
      */
-    //- в конструкторе тип был указан правильно, но есть ошибка в проверке на существование элемента (в случае пустого параметра);
-    function __construct(int $name = 0)
-    {
-        if (empty($name)) {
-            while (array_search(self::$count, self::$arSetName) != false) {
-                ++self::$count;
-            }
-            $name = self::$count;
-        }
-        $this->name = $name;
-        self::$arSetName[] = $this->name;
-    }
-    protected $name;
-    // protected $name;
-    /**
-     * @return string
-     */
+     // В конструкторе тип int установлен верно, но в нем же есть ошибка, в конструкторе
+     // Предположим что ошибка - лишнее написание != false и вторая ошибка передача букв при создании второго объекта
+     function __construct(int $name = 0) // Конструктор принимает !!целочисленное
+     {
+         if (empty($name)) { // Если $name не задано или = 0, то выполняется условие
+             while (array_search(self::$count, self::$arSetName) != false) { // можно убрать != false
+                 ++self::$count; // Если объект создается без переменной внутри, то срабатывает счетчик и записывается в масс. по порядку
+             }
+             $name = self::$count;
+         }
+         $this->name = $name;
+         self::$arSetName[] = $this->name; // Значение передается в массив в статику, либо счетчик
+     }
+     public function getArray() // Проверяю, что в массиве в статике
+     {
+       return self::$arSetName;
+     }
+     //private $name;
+     protected $name;
+     /**
+      * @return string
+    */
+
+
+}
+
+/*
+{
+
+
     public function getName(): string
     {
         return '*' . $this->name  . '*';
     }
     protected $value;
-    /**
-     * @param mixed $value
-     */
+
     public function setValue($value)
     {
         $this->value = $value;
     }
-    /**
-     * @return string
-     */
+
     public function getSize()
     {
         $size = strlen(serialize($this->value));
@@ -49,17 +58,13 @@ class newBase
     {
         return ['value'];
     }
-    /**
-     * @return string
-     */
+
     public function getSave(): string
     {
         $value = serialize($value);
         return $this->name . ':' . sizeof($value) . ':' . $value;
     }
-    /**
-     * @return newBase
-     */
+
     static public function load(string $value): newBase
     {
         $arValue = explode(':', $value);
@@ -68,3 +73,4 @@ class newBase
                 + strlen($arValue[1]) + 1), $arValue[1]));
     }
 }
+*/
