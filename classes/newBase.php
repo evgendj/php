@@ -13,7 +13,8 @@ class newBase
      function __construct(int $name = 0) // Конструктор принимает !!целочисленное
      {
          if (empty($name)) { // Если $name не задано или = 0, то выполняется условие
-             while (array_search(self::$count, self::$arSetName) != false) { // можно убрать != false
+             // while (array_search(self::$count, self::$arSetName) != false) {
+             while (array_search(self::$count, self::$arSetName)) {
                  ++self::$count; // Если объект создается без переменной внутри, то срабатывает счетчик и записывается в масс. по порядку
              }
              $name = self::$count;
@@ -28,37 +29,38 @@ class newBase
      //private $name;
      protected $name;
      /**
-      * @return string
+      * @return string // Метод вернет строку
     */
-
+    public function getName(): string // Метод для работы со свойством name, но он нигде не вызывается
+    {
+        return '*' . $this->name  . '*';
+    }
+    protected $value;
+    /**
+     * @param mixed $value // Входящий парамтр будет микс
+     */
+     public function setValue($value) // Просто установка значения
+     {
+         $this->value = $value;
+     }
+     /**
+      * @return string // Должен строку вернуть
+      */
+      public function getSize()
+      {
+          $size = strlen(serialize($this->value)); // Сериализуется первый объект, поскольку он в value и измеряется длина этой строки се-и
+          return strlen($size) + $size; // Здесь измеряется длина строки измерения сериализации и плюсуется эта же длина строки
+                                        // А так же ниже магический метод возвращает только...
+      }
+      public function __sleep()
+      {
+          return ['value'];   //... сериализованный объект с одним свойством value
+      }
 
 }
 
 /*
 {
-
-
-    public function getName(): string
-    {
-        return '*' . $this->name  . '*';
-    }
-    protected $value;
-
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
-
-    public function getSize()
-    {
-        $size = strlen(serialize($this->value));
-        return strlen($size) + $size;
-    }
-    public function __sleep()
-    {
-        return ['value'];
-    }
-
     public function getSave(): string
     {
         $value = serialize($value);

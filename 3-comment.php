@@ -28,7 +28,7 @@ class newBase
     //private $name;
     protected $name;
     /**
-     * @return string
+     * @return string // Метод вернет строку
      */
     public function getName(): string
     {
@@ -47,12 +47,13 @@ class newBase
      */
     public function getSize()
     {
-        $size = strlen(serialize($this->value));
-        return strlen($size) + $size;
+        $size = strlen(serialize($this->value)); // Сериализуется первый объект, поскольку он в value и измеряется длина этой строки се-и
+        return strlen($size) + $size; // Здесь измеряется длина строки измерения сериализации и плюсуется эта же длина строки
+                                      // А так же ниже магический метод возвращает только...
     }
     public function __sleep()
     {
-        return ['value'];
+        return ['value'];   //... сериализованный объект с одним свойством value
     }
     /**
      * @return string
@@ -189,7 +190,8 @@ function gettype($value): string
 $obj = new newBase('12345');
 $obj->setValue('text');
 
-$obj2 = new \Test3\newView('O9876');
+// $obj2 = new \Test3\newView('O9876');
+$obj2 = new \Test3\newView('9876');  // Передавалось О, поменял на ноль было -
 $obj2->setValue($obj);
 $obj2->setProperty('field');
 $obj2->getInfo();
@@ -206,3 +208,28 @@ var_dump($obj2->getSave() == $obj3->getSave
 // а объекты должны быть одним и тем же экземпляром.
 // Будет возвращен первый ключ первого найденого значения. Если нужны все ключи нужно array_keys() использовать
 //
+// is_subclass_of() - проверяет объект, наследует ли он указанный класс.
+//
+// strlen() - возвращает длину строки и 0  в случае пустой строки
+//
+// serialize() Сериализация — процесс конвертирования сложной структуры языка программирования в строку, для компактной передачи данных
+// Product Object
+// (
+//     [product_name] => Пылесос
+//     [available:Product:private] => 1
+// )
+// Сериализованный объект
+// O:7:"Product":2:{s:12:"product_name";s:7:"Пылесос";s:18:"Productavailable";b:1;}
+// O:7:»Product»:2: — объект класса «Product», в названии 7 символов, содержит 2 поля.
+// s:12:»product_name» — строковая переменная, название поля «product_name» из 12 символов.
+// s:7:»Пылесос» — строка из 7 символов «Пылесос».
+// b:1 – булево значение true;
+// Поддерживаемые функцией serialize() типы данных:
+// i:4; // - тип integer
+// s:6:"qwerty"; // - тип string
+// b:1; //- тип boolean
+// a:3:{...} //array
+// O:9:"TestClass":1:{...} //object
+// Методы я так понял не попадают в сериализацию
+// Если стоит магический метод __sleep(), в нем обысно указывается какое свойство сериализовать - return ['value'];
+// то сериализует это свойство. Метод может быть в любом месте документа, последовательность не имеет значения
