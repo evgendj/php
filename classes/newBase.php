@@ -56,17 +56,23 @@ class newBase
       {
           return ['value'];   //... сериализованный объект с одним свойством value
       }
-
+    /**
+     * @return string
+     */
+    public function getSave(): string
+    {
+        // $value = serialize($value);
+        $value = serialize($this->value);
+        // return $this->name . ':' . sizeof($value) . ':' . $value;
+        return $this->name . ':' . strlen($value) . ':' . $value;
+    }
+    /**
+     * @return newBase
+     */
 }
 
 /*
 {
-    public function getSave(): string
-    {
-        $value = serialize($value);
-        return $this->name . ':' . sizeof($value) . ':' . $value;
-    }
-
     static public function load(string $value): newBase
     {
         $arValue = explode(':', $value);

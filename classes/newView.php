@@ -76,22 +76,28 @@ class newView extends newBase // Класс наследует методы и �
                echo 'Error: ' . $exc->getMessage();
            }
        }
-
-}
-
-/*
-{
+    /**
+     * @return string
+     */
     public function getSave(): string
     {
-        if ($this->type == 'test') {
+        if ($this->type == 'test') {                // Если указанный тип, то в значение загоняется не массив, а то что возвращает метод
             $this->value = $this->value->getSave();
         }
         return parent::getSave() . serialize($this->property);
     }
-
+    /**
+     * @return newView
+     */
     static public function load(string $value): newBase
     {
-        $arValue = explode(':', $value);
+        $arValue = explode(':', $value); // 9876:28:s:20:"12345:11:s:4:"text";";s:5:"field"; - Разбиваем на массив
+        return (new newBase($arValue[0]))
+            ->setValue(unserialize(substr($value, strlen($arValue[0]) + 1
+                + strlen($arValue[1]) + 1), $arValue[1]));
+    }
+}
+/*{{
         return (new newBase($arValue[0]))
             ->setValue(unserialize(substr($value, strlen($arValue[0]) + 1
                 + strlen($arValue[1]) + 1), $arValue[1]))
@@ -102,3 +108,5 @@ class newView extends newBase // Класс наследует методы и �
 }
 
 */
+setValue(unserialize(substr($value, strlen($arValue[0]) + 1 + strlen($arValue[1]) + 1), $arValue[1]))
+    28

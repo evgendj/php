@@ -43,9 +43,9 @@ $obj2->setValue($obj);
 $obj2->setProperty('field');
 $obj2->getInfo();
 //
-// $save = $obj2->getSave();
+$save = $obj2->getSave();
 //
-// $obj3 = newView::load($save);
+$obj3 = newView::load($save);
 //
 // var_dump($obj2->getSave() == $obj3->getSave
 
@@ -74,6 +74,13 @@ echo "<hr>";
 echo "Обращаюсь к getName() Второго класса<hr>";
 echo $obj2->getName();
 
+echo "<hr>";
+echo "Вывожу готовую строку для передачи<hr>";
+echo $save;
+
+echo "<hr>";
+echo "Третий объект (после десериализации)<hr>";
+debug($obj3);
 /*
 
 $obj = new newBase('12345');

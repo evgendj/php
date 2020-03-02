@@ -38,8 +38,6 @@ class Product {
 	public function __construct($name, $price) {
 		$this->name = $name;
 		$this->price = $price;
-
-    echo serialize($this);
 	}
 
   public function __sleep ()
@@ -49,9 +47,10 @@ class Product {
 }
 $obj = new Product(1,2);
 
-
+$o = serialize($obj);
+echo $o;
 debug($obj);
-
+debug(unserialize($o));
 
 /*class Product
 {
