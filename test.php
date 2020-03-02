@@ -52,6 +52,12 @@ echo $o;
 debug($obj);
 debug(unserialize($o));
 
+echo "Второй тест<hr>";
+$value = '9876:28:s:20:"12345:11:s:4:"text";";s:5:"field"';
+$arValue = explode(':', $value); // 9876:28:s:20:"12345:11:s:4:"text";";s:5:"field"; - Разбиваем на массив
+$newobd = unserialize(substr($value, strlen($arValue[0]) + 1 + strlen($arValue[1]) + 1, $arValue[1]));
+debug($arValue);
+debug($newobd);
 /*class Product
 {
     public $product_name = "";
