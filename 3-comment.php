@@ -201,7 +201,7 @@ $save = $obj2->getSave();
 
 $obj3 = newView::load($save);
 
-var_dump($obj2->getSave() == $obj3->getSave
+var_dump($obj2->getSave() == $obj3->getSave());
 
 
 // array_search() - ищет значение (первый аргумент mixed - если строка, то с учетом регистра) в массиве (второй аргумент array).
