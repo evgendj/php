@@ -14,6 +14,7 @@ class newView extends newBase // Класс наследует методы и �
         parent::setValue($value);
         $this->setType();
         $this->setSize();
+         return $this; // Добваил тут строку
      }
      public function setProperty($value) // Метод только для второго класса
      {
@@ -36,7 +37,7 @@ class newView extends newBase // Класс наследует методы и �
        }
      }
      /**
-      * @return string // Вернет строку
+      * @return array
       */
       public function __sleep()
       {
@@ -86,23 +87,20 @@ class newView extends newBase // Класс наследует методы и �
         }
         return parent::getSave() . serialize($this->property);
     }
+
     /**
+     * @param string $value
      * @return newView
      */
     static public function load(string $value): newBase
     {
         $arValue = explode(':', $value); // 9876:28:s:20:"12345:11:s:4:"text";";s:5:"field"; - Разбиваем на массив
-        return (new newBase($arValue[0]))
+        return (new newView($arValue[0]))
             ->setValue(unserialize(substr($value, strlen($arValue[0]) + 1
                 // + strlen($arValue[1]) + 1), $arValue[1]))
-                + strlen($arValue[1]) + 1, $arValue[1])));
-    }
-}
-/*{{
+                + strlen($arValue[1]) + 1, $arValue[1])))
             ->setProperty(unserialize(substr($value, strlen($arValue[0]) + 1
                 + strlen($arValue[1]) + 1 + $arValue[1])))
             ;
     }
 }
-
-*/

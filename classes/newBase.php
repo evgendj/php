@@ -42,6 +42,7 @@ class newBase
      public function setValue($value) // Просто установка значения
      {
          $this->value = $value;
+         return $this;
      }
      /**
       * @return string // Должен строку вернуть
@@ -66,19 +67,18 @@ class newBase
         // return $this->name . ':' . sizeof($value) . ':' . $value;
         return $this->name . ':' . strlen($value) . ':' . $value;
     }
+
     /**
+     * @param string $value
      * @return newBase
      */
-}
-
-/*
-{
     static public function load(string $value): newBase
     {
         $arValue = explode(':', $value);
         return (new newBase($arValue[0]))
             ->setValue(unserialize(substr($value, strlen($arValue[0]) + 1
-                + strlen($arValue[1]) + 1), $arValue[1]));
+                // + strlen($arValue[1]) + 1), $arValue[1]));
+                + strlen($arValue[1]) + 1, $arValue[1])));
     }
 }
-*/
+

@@ -45,7 +45,7 @@ $obj2->getInfo();
 //
 $save = $obj2->getSave();
 //
-//$obj3 = newView::load($save);
+$obj3 = newView::load($save);
 //
 // var_dump($obj2->getSave() == $obj3->getSave());
 

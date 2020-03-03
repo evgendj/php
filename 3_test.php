@@ -31,7 +31,7 @@ class newBase
         $this->name = $name; // Создается новое свойство из значения при создании объекта
         self::$arSetName[] = $this->name; // Значение передается в массив в статику
     }
-    private $name;
+    protected $name;
     /**
      * @return string
      */
