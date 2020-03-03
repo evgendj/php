@@ -45,9 +45,12 @@ $obj2->getInfo();
 //
 $save = $obj2->getSave();
 //
-$obj3 = newView::load($save);
+// $obj3 = newView::load($save);
 //
 // var_dump($obj2->getSave() == $obj3->getSave());
+echo "<hr>";
+echo "Вывод getSave<hr>";
+var_dump($obj2->getSave());
 
 //
 $obj40 = new newBase;
@@ -81,24 +84,3 @@ echo $save;
 echo "<hr>";
 echo "Третий объект (после десериализации)<hr>";
 debug($obj3);
-/*
-
-$obj = new newBase('12345');
-$obj->setValue('text');
-//
-$obj2 = new \Test3\newView('09876');
-$obj2->setValue($obj);
-$obj2->setProperty('field');
-$obj2->getInfo();
-//
-//$save = $obj2->getSave();
-//
-//$obj3 = newView::load($save);
-//
-//var_dump($obj2->getSave() == $obj3->getSave());
-
-//
-//
-debug($obj);
-debug($obj2);
-*/

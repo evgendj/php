@@ -39,10 +39,7 @@ class newView extends newBase // Класс наследует методы и �
      /**
       * @return array
       */
-      public function __sleep()
-      {
-        return ['property'];
-      }
+
       public function getName(): string
       {
           if (empty($this->name)) {
@@ -83,7 +80,7 @@ class newView extends newBase // Класс наследует методы и �
     public function getSave(): string
     {
         if ($this->type == 'test') {                // Если указанный тип, то в значение загоняется не массив, а то что возвращает метод
-            $this->value = $this->value->getSave();
+              $this->value = $this->value->getSave();
         }
         return parent::getSave() . serialize($this->property);
     }

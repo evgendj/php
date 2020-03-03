@@ -81,4 +81,3 @@ class newBase
                 + strlen($arValue[1]) + 1, $arValue[1])));
     }
 }
-
